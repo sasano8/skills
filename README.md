@@ -70,6 +70,10 @@ Claude 側は `plugin list` 上の id が `distillation@skills-dir` になるだ
 > 存在しないため、残すと Claude はコピー時点のスナップショット、Codex は作業ツリーの現在、
 > という**エージェントごとに違う版が動く状態**になり、受け入れ確認にならないから。
 > 両方に戻すのは `make install-dev` 一発。
+>
+> 逆向きも同じで、`make install-dev` はコピー形式の痕跡（プラグイン・marketplace 登録・
+> `settings.json` の記述）をすべて外してから symlink を張る。片方だけを外したいときは
+> `make uninstall-copy` / `make uninstall-dev`。
 
 > ローカル登録と GitHub 登録は**同じ marketplace 名**（`sasano8-skills`）を名乗るので、
 > 両方を同時には登録できない。切り替えるときは `/plugin marketplace remove sasano8-skills` してから

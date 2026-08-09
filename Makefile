@@ -41,10 +41,7 @@ update: ## marketplace のカタログを取り直す
 
 .PHONY: uninstall
 # REJECT: [distill:make-uninstall-drops-shared-marketplace]: install が marketplace 全体を登録する以上、uninstall が全体を外すのは対称で一貫している
-uninstall: uninstall-dev ## PLUGIN の導入をすべて外す（コピー / marketplace 登録 / Claude・Codex の symlink）
-	@claude plugin uninstall $(PLUGIN)@$(MARKETPLACE) 2>/dev/null || echo "skip  コピー版は未インストール"
-	@claude plugin marketplace remove $(MARKETPLACE) 2>/dev/null || echo "skip  marketplace は未登録"
-	@node scripts/forget-marketplace.mjs $(MARKETPLACE)
+uninstall: uninstall-dev uninstall-copy ## PLUGIN の導入をすべて外す（コピー形式・symlink の両方）
 
 .PHONY: install-dev
 install-dev: claude-link codex-link ## Claude と Codex の両方へ symlink する（コピーせず即反映＝開発用）
@@ -58,12 +55,11 @@ claude-link: uninstall-copy ## PLUGIN を Claude のスキルディレクトリ�
 	@ln -sfn $(CURDIR)/plugins/$(PLUGIN) $(CLAUDE_SKILLS_DIR)/$(PLUGIN) \
 		&& echo "link  $(CLAUDE_SKILLS_DIR)/$(PLUGIN)  ($(PLUGIN)@skills-dir)"
 
-# 内部ターゲット（help には出さない）。コピー版と symlink は同名だと共存できず
-# marketplace 側が優先されるため、リンクを張る前にコピー版だけを外す。
-# marketplace 登録は残す（update / install で使い回すため）。
 .PHONY: uninstall-copy
-uninstall-copy:
-	@claude plugin uninstall $(PLUGIN)@$(MARKETPLACE) 2>/dev/null || true
+uninstall-copy: ## コピー形式だけを外す（プラグイン・marketplace 登録・settings の記述）
+	@claude plugin uninstall $(PLUGIN)@$(MARKETPLACE) 2>/dev/null || echo "skip  コピー版は未インストール"
+	@claude plugin marketplace remove $(MARKETPLACE) 2>/dev/null || echo "skip  marketplace は未登録"
+	@node scripts/forget-marketplace.mjs $(MARKETPLACE)
 
 .PHONY: claude-unlink
 claude-unlink: ## claude-link で張った symlink を外す
