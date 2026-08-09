@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Install"
+  short_description: "Claude Code / Codex CLI をマシンへ導入する"
+  default_prompt: "Use $agent-install to inspect and install the coding agent CLIs (Claude Code / Codex) on this machine, then verify authentication."

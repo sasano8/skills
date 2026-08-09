@@ -1,0 +1,4 @@
+interface:
+  display_name: "Env Bootstrap"
+  short_description: "版管理された dotfiles を冪等・非破壊に反映する"
+  default_prompt: "Use $env-bootstrap to apply version-controlled dotfiles to this machine idempotently and wire skills into each tool."

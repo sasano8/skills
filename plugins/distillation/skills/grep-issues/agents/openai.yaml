@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grep Issues"
+  short_description: "TODO / FIXME / REJECT と open な課題票を一覧する（read-only）"
+  default_prompt: "Use $grep-issues to list the TODO / FIXME / REJECT tags in the source and the open issue sheets in the workspace."

@@ -7,6 +7,7 @@
 
 | プラグイン | 内容 | スキル |
 | --- | --- | --- |
+| [advisor](plugins/advisor/) | 変化する製品情報を検索し、用途と優先順位に合う選択肢を助言する | `ai-model` |
 | [distillation](plugins/distillation/) | コードから規則・慣習を蒸留してスキル草稿を生成し、未起票の課題をソースの `TODO:` / `FIXME:` / `REJECT:` タグへ還す | `extract-rules` `extract-issues` `merge-issues` `grep-issues` |
 
 プラグインのスキルは常に**プラグイン名で名前空間される**（`/<plugin>:<skill>`）ので、
@@ -56,8 +57,12 @@ symlink 方式では marketplace を経由せず、**その場のファイルが
 
 | | リンク先 | 単位 | 呼び出し名 |
 | --- | --- | --- | --- |
-| Claude | `~/.claude/skills/<plugin>` | プラグイン 1 つ | `/distillation:extract-rules` |
-| Codex | `~/.agents/skills/<skill>` | スキルごと | `$extract-rules` |
+| Claude | `~/.claude/skills/<plugin>` | プラグインごと（全プラグイン） | `/distillation:extract-rules` |
+| Codex | `~/.agents/skills/<skill>` | スキルごと（全スキル） | `$extract-rules` |
+
+どちらも `plugins/` にあるものを**すべて**張る（`PLUGIN=` は効かない）。Claude だけ 1 プラグインに
+絞ると、Codex は全スキル・Claude は 1 つという非対称な状態になり、受け入れ確認にならないため。
+`PLUGIN=` が効くのはコピー形式の `make install-plugin` だけ。
 
 Codex にはプラグインの概念が無いのでスキル単位で張る（名前空間も付かない）。
 Claude 側は `plugin list` 上の id が `distillation@skills-dir` になるだけで、呼び出し名は変わらない。
@@ -115,7 +120,8 @@ make tag-dryrun # 打たれる release タグ名を確認するだけ
 make tag        # release タグを打つ（PUSH=1 で origin へ push まで）
 ```
 
-対象プラグインは `PLUGIN=<name>` で切り替える（既定 `distillation`）。
+対象プラグインは `PLUGIN=<name>` で切り替える（既定 `distillation`）。効くのは 1 プラグインを名指しする
+ターゲット（`install-plugin` / `tag` / `tag-dryrun`）だけで、`install-dev` 系は常に全プラグインを張る。
 
 `make install-dev` してあれば、プラグインを編集して `/reload-plugins` で反映できる（再起動不要）。
 SKILL.md の編集はセッション中に即反映される。
@@ -145,14 +151,17 @@ plugins/
     skills/
       extract-rules/SKILL.md         # = /distillation:extract-rules
       extract-rules/reference.md     # → ../../reference.md（symlink）
+      extract-rules/agents/openai.yaml  # Codex 用のメタデータ（Claude は読まない）
       extract-issues/SKILL.md
       merge-issues/SKILL.md
       grep-issues/SKILL.md
     README.md
   <next-plugin>/                     # 2 つ目以降も同じ形で並べる
-workspaces/                          # スキルの作業場置き場（workspaces/<skill>/）
+workspaces/                          # プラグインの作業場置き場（workspaces/<plugin>/<target>/）
   distillation/default/              # このリポジトリ自身を対象にした distillation の作業場
     {config,issue,skill}/            # → plugins/distillation/（プラグイン実体）とは別物
+  advisor/default/
+    ai_model.md                      # advisor の成果物（1 スキル 1 ファイル）
 ```
 
 `.claude-plugin/` の中に置くのは `plugin.json` / `marketplace.json` **だけ**で、`skills/` や `agents/`、
@@ -167,8 +176,9 @@ workspaces/                          # スキルの作業場置き場（workspac
 1. `plugins/<name>/.claude-plugin/plugin.json` を作る（`name` がスキルの名前空間になる）
 2. `plugins/<name>/skills/<skill>/SKILL.md` を書く（frontmatter は `name` と `description` が要。`description` は
    「いつ使うか」を具体的に書く — Claude はここだけを見て起動を判断する）
-3. ルートの `.claude-plugin/marketplace.json` の `plugins` に `{"name": ..., "source": "./plugins/<name>", ...}` を足す
-4. `make validate` → `make install-dev PLUGIN=<name>` で動作確認
+3. 各スキルに `agents/openai.yaml` を置く（Codex 用のベンダーメタデータ。下記「ベンダー固有ファイル」）
+4. ルートの `.claude-plugin/marketplace.json` の `plugins` に `{"name": ..., "source": "./plugins/<name>", ...}` を足す
+5. `make validate` → `make install-dev` で動作確認
 
 `plugin.json` の `version` を上げたときだけ利用者に更新が届く。リリースのたびに bump する。
 
@@ -239,6 +249,27 @@ Codex CLI では `$extract-rules` のように明示起動、`/skills` で一覧
 暗黙起動もする（Claude と同じ挙動）。呼び出し名が `/distillation:extract-rules` ではなく
 `extract-rules` になる点だけ違う。共有 `reference.md` は symlink がスキルディレクトリ内に
 入っているので、そのまま解決される。
+
+### ベンダー固有ファイル
+
+エージェント固有の設定は **SKILL.md 本文には書かず、別ファイルに寄せる**。SKILL.md は全エージェント
+共通の正本なので混ぜない。別ファイルなら、読まないエージェントでは単に無視されるので無害。
+
+現在置いているのは 1 つだけで、**全スキルに置く**:
+
+```
+plugins/<plugin>/skills/<skill>/agents/openai.yaml
+```
+
+Codex がスキル一覧に出す表示名・短い説明・既定プロンプトを持つ。
+
+| | 読むか | 効果 |
+| --- | --- | --- |
+| Codex | 読む | `display_name` / `short_description` / `default_prompt` が一覧と起動に反映される |
+| Claude Code | 読まない | `agents/` を解釈するのは**プラグインのルート直下だけ**で、スキル内のこれは無視される |
+
+つまり Claude 側の起動判定は SKILL.md の `description` 一本で、このファイルの有無に影響されない。
+Claude 用のサブエージェントを足したくなったら、`plugins/<plugin>/agents/` に置くこと（スキルの中では効かない）。
 
 ### その他
 

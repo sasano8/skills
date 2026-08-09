@@ -1,0 +1,4 @@
+interface:
+  display_name: "Track Issues"
+  short_description: "課題票の置き場所・書式の規定と、起票の入口"
+  default_prompt: "Use $track-issues to file a given issue as an issue sheet, following this repository's issue-tracking conventions."

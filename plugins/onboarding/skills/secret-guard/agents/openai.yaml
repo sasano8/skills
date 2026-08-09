@@ -1,0 +1,4 @@
+interface:
+  display_name: "Secret Guard"
+  short_description: "シークレット混入を commit 前に止めるガードを入れる"
+  default_prompt: "Use $secret-guard to install a global pre-commit guard that stops secrets from being committed."

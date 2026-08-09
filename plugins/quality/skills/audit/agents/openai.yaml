@@ -1,0 +1,4 @@
+interface:
+  display_name: "Quality Audit"
+  short_description: "品質規約に照らして監査し、是正をタスク化する"
+  default_prompt: "Use $audit to audit this repository against the quality conventions and turn the violations into tasks."

@@ -41,7 +41,7 @@ update: ## marketplace のカタログを取り直す
 
 .PHONY: uninstall
 # REJECT: [distill:make-uninstall-drops-shared-marketplace]: install-plugin が marketplace 全体を登録する以上、uninstall が全体を外すのは対称で一貫している
-uninstall: uninstall-dev uninstall-copy ## PLUGIN の導入をすべて外す（コピー形式・symlink の両方）
+uninstall: uninstall-dev uninstall-copy ## 導入をすべて外す（コピー形式・symlink の両方 / 全プラグイン）
 
 .PHONY: install-dev
 install-dev: claude-link codex-link ## Claude と Codex の両方へ symlink する（コピーせず即反映＝開発用）
@@ -50,14 +50,18 @@ install-dev: claude-link codex-link ## Claude と Codex の両方へ symlink す
 uninstall-dev: claude-unlink codex-unlink ## Claude・Codex の symlink だけを外す（コピーは残す）
 
 .PHONY: claude-link
-claude-link: uninstall-copy claude-unlink ## PLUGIN を Claude のスキルディレクトリへ symlink（コピーせず即反映＝開発用）
+claude-link: uninstall-copy claude-unlink ## 全プラグインを Claude のスキルディレクトリへ symlink（コピーせず即反映＝開発用）
 	@mkdir -p $(CLAUDE_SKILLS_DIR)
-	@ln -sfn $(CURDIR)/plugins/$(PLUGIN) $(CLAUDE_SKILLS_DIR)/$(PLUGIN) \
-		&& echo "link  $(CLAUDE_SKILLS_DIR)/$(PLUGIN)  ($(PLUGIN)@skills-dir)"
+	@for p in $(PLUGINS); do \
+		ln -sfn $(CURDIR)/plugins/$$p $(CLAUDE_SKILLS_DIR)/$$p \
+			&& echo "link  $(CLAUDE_SKILLS_DIR)/$$p  ($$p@skills-dir)"; \
+	done
 
 .PHONY: uninstall-copy
 uninstall-copy: ## コピー形式だけを外す（プラグイン・marketplace 登録・settings の記述）
-	@claude plugin uninstall $(PLUGIN)@$(MARKETPLACE) 2>/dev/null || echo "skip  コピー版は未インストール"
+	@for p in $(PLUGINS); do \
+		claude plugin uninstall $$p@$(MARKETPLACE) 2>/dev/null || echo "skip  $$p のコピー版は未インストール"; \
+	done
 	@claude plugin marketplace remove $(MARKETPLACE) 2>/dev/null || echo "skip  marketplace は未登録"
 	@node scripts/forget-marketplace.mjs $(MARKETPLACE)
 

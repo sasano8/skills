@@ -1,0 +1,4 @@
+interface:
+  display_name: "Merge Issues"
+  short_description: "方針の決まった課題をソースのタグへ転記する"
+  default_prompt: "Use $merge-issues to move issues whose resolution is decided from the issue sheets into TODO / FIXME / REJECT tags in the source."

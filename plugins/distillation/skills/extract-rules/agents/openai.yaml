@@ -1,0 +1,4 @@
+interface:
+  display_name: "Extract Rules"
+  short_description: "コードから規則・慣習を蒸留してスキル草稿を生成する"
+  default_prompt: "Use $extract-rules to read the target project's code and distill its rules and conventions into a reusable skill draft."

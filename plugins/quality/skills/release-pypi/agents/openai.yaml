@@ -1,0 +1,4 @@
+interface:
+  display_name: "PyPI Release"
+  short_description: "PyPI へ公開するリリース CI を導入・点検する"
+  default_prompt: "Use $release-pypi to set up or inspect the release CI that publishes this Python package to PyPI via Trusted Publishing."

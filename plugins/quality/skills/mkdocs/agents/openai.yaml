@@ -1,0 +1,4 @@
+interface:
+  display_name: "MkDocs Site"
+  short_description: "docs サイトと GitHub Pages 公開 CI を導入・点検する"
+  default_prompt: "Use $mkdocs to set up or inspect the MkDocs Material docs site and its GitHub Pages publishing CI."

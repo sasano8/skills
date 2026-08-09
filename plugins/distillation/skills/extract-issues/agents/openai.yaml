@@ -1,0 +1,4 @@
+interface:
+  display_name: "Extract Issues"
+  short_description: "コードを読んで未起票の課題を洗い出し課題票へ起票する"
+  default_prompt: "Use $extract-issues to read the target project's code and file the issues that are not tracked yet."
