@@ -21,7 +21,7 @@ Claude Code プラグイン。あわせて未起票の**課題**を抽出して�
 flowchart TD
     SRC["<b>ソース</b><br/>コード ＝ 唯一の正"]
 
-    subgraph WS["作業場 .cache/distillation/&lt;target&gt;/（git 非追跡・一時的）"]
+    subgraph WS["作業場 workspaces/distillation/&lt;target&gt;/"]
         RULE["<b>規則</b><br/>skill/ スキル草稿"]
         ISSUE["<b>課題</b><br/>issue/ 課題票"]
     end
@@ -66,8 +66,11 @@ flowchart TD
 （この方式を選んだ理由と Windows 非対象の注記は
 [リポジトリ README](../../README.md#スキル間で定義を共有するsymlink-方式)）。
 
-成果物・課題・scope は対象プロジェクトの `.cache/distillation/<target>/` に target 単位で永続管理する
-（git 非追跡の作業場。コミットしない）。
+成果物・課題・scope は対象プロジェクトの `workspaces/distillation/<target>/` に target 単位で
+永続管理する（`workspaces/<skill>/` はスキル共通の作業場置き場）。git 非追跡にしたいなら
+`.cache/workspaces/distillation/` へディレクトリごと移すだけでよい。任意の別パスに置きたいときは
+`AGENTS.md` / `CLAUDE.md` に `distillation-workspace: <path>` の 1 行を書く
+（詳細は [`reference.md`](reference.md) の「置き場所の解決」）。
 
 ## CI で回すときの注意
 

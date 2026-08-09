@@ -1,7 +1,7 @@
 ---
 name: merge-issues
 type: func
-description: 対応方針が決まった課題を .cache/distillation/<target>/issue/ の課題票から対象ソースの TODO / FIXME / REJECT タグへ転記し、マージ済みの節を削除して正をコードへ一本化する（転記のみ・実修正はしない）。ユーザーが「課題をマージ」「対応方針を反映」「タグへ還す」「方針をソースへ書いて」等を求めたときに使う。一覧するだけなら grep-issues を使う。プロジェクト非依存。
+description: 対応方針が決まった課題を workspaces/distillation/<target>/issue/ の課題票から対象ソースの TODO / FIXME / REJECT タグへ転記し、マージ済みの節を削除して正をコードへ一本化する（転記のみ・実修正はしない）。ユーザーが「課題をマージ」「対応方針を反映」「タグへ還す」「方針をソースへ書いて」等を求めたときに使う。一覧するだけなら grep-issues を使う。プロジェクト非依存。
 ---
 
 # merge-issues — 対応方針をソースのタグへ還す

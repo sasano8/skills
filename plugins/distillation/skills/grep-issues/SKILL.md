@@ -1,7 +1,7 @@
 ---
 name: grep-issues
 type: func
-description: 対象プロジェクトのソースと TODO.md を TODO / FIXME / REJECT で grep し、distill タグ付きの課題（採用 / 保留 / 却下）と手書きの未了作業を一覧表示する。あわせて .cache/distillation/<target>/issue/ に残る open の課題票を併記して、方針待ちを可視化する。read-only で何も書き換えない。ユーザーが「課題を列挙」「課題を一覧」「TODO を一覧」「今どんなタグがあるか」「未了作業を見せて」「distill タグを確認」等を求めたときに使う。プロジェクト非依存。
+description: 対象プロジェクトのソースと TODO.md を TODO / FIXME / REJECT で grep し、distill タグ付きの課題（採用 / 保留 / 却下）と手書きの未了作業を一覧表示する。あわせて workspaces/distillation/<target>/issue/ に残る open の課題票を併記して、方針待ちを可視化する。read-only で何も書き換えない。ユーザーが「課題を列挙」「課題を一覧」「TODO を一覧」「今どんなタグがあるか」「未了作業を見せて」「distill タグを確認」等を求めたときに使う。プロジェクト非依存。
 ---
 
 # grep-issues — ソースのタグと課題票を一覧する

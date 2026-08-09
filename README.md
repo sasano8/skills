@@ -109,6 +109,8 @@ make tag        # release タグを打つ（PUSH=1 で origin へ push まで）
 ### リポジトリ構成
 
 ```
+AGENTS.md                            # エージェント向けの規約（実体）
+CLAUDE.md                            # @AGENTS.md を import するだけ（Claude Code は AGENTS.md を読まない）
 .claude-plugin/marketplace.json      # marketplace カタログ（このリポジトリのルートに 1 つ）
 plugins/
   distillation/
@@ -122,10 +124,17 @@ plugins/
       grep-issues/SKILL.md
     README.md
   <next-plugin>/                     # 2 つ目以降も同じ形で並べる
+workspaces/                          # スキルの作業場置き場（workspaces/<skill>/）
+  distillation/default/              # このリポジトリ自身を対象にした distillation の作業場
+    {config,issue,skill}/            # → plugins/distillation/（プラグイン実体）とは別物
 ```
 
 `.claude-plugin/` の中に置くのは `plugin.json` / `marketplace.json` **だけ**で、`skills/` や `agents/`、
 `hooks/` はプラグインのルート直下に置く（よくある間違い）。
+
+規約は `AGENTS.md` を実体とし、`CLAUDE.md` は `@AGENTS.md` の 1 行だけを持つ
+（**Claude Code は `AGENTS.md` を読まない**ため。Codex は `AGENTS.md` を読む）。
+編集は `AGENTS.md` 側へ。
 
 ### プラグインを 1 つ追加する
 
