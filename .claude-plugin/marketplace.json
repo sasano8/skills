@@ -8,6 +8,13 @@
   },
   "plugins": [
     {
+      "name": "advisor",
+      "source": "./plugins/advisor",
+      "description": "変化する製品情報を実行時に調査し、用途と優先順位に合う選択肢を比較・助言する。まず Claude Code / Codex の AI モデルと速度設定を扱う。",
+      "category": "development",
+      "tags": ["advisor", "ai-model", "claude-code", "codex", "model-selection", "reasoning", "latency"]
+    },
+    {
       "name": "quality",
       "source": "./plugins/quality",
       "description": "プロジェクトの品質規約を正本として持ち、リポジトリを監査して是正をタスク化する。docs サイトと PyPI リリースの公開 CI も、CI を割らない安全な guard 付きで整える（Python + uv）。",

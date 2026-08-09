@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "advisor",
+  "displayName": "Advisor",
+  "version": "0.1.0",
+  "description": "変化する製品情報を実行時に調査し、用途と優先順位に合う選択肢を比較・助言する。まず Claude Code / Codex の AI モデルと速度設定を扱う。",
+  "author": {
+    "name": "sasano8",
+    "url": "https://github.com/sasano8"
+  },
+  "homepage": "https://github.com/sasano8/skills",
+  "repository": "https://github.com/sasano8/skills",
+  "license": "MIT",
+  "keywords": ["advisor", "ai-model", "claude-code", "codex", "model-selection", "reasoning", "latency"]
+}

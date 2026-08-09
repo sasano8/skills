@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Model Advisor"
+  short_description: "Claude/Codex のモデルと速度設定を用途別に比較"
+  default_prompt: "Use $ai-model to research current Claude and Codex model and speed combinations and recommend the best fit."
