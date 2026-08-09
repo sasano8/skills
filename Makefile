@@ -12,6 +12,7 @@ SKILLS_DIR  ?= $(HOME)/.agents/skills
 CLAUDE_SKILLS_DIR ?= $(HOME)/.claude/skills
 
 .DEFAULT_GOAL := help
+.NOTPARALLEL:
 
 .PHONY: help
 help: ## このヘルプを表示
@@ -30,7 +31,7 @@ validate: ## marketplace と全プラグインのマニフェストを検証
 	@for p in $(PLUGINS); do claude plugin validate ./plugins/$$p --strict || exit 1; done
 
 .PHONY: install
-install: ## このリポジトリをローカル marketplace として登録し PLUGIN をインストール
+install: claude-unlink ## このリポジトリをローカル marketplace として登録し PLUGIN をインストール
 	claude plugin marketplace add $(CURDIR)
 	claude plugin install $(PLUGIN)@$(MARKETPLACE) --scope $(SCOPE)
 
@@ -52,11 +53,17 @@ install-dev: claude-link codex-link ## Claude と Codex の両方へ symlink す
 uninstall-dev: claude-unlink codex-unlink ## Claude・Codex の symlink だけを外す（コピーは残す）
 
 .PHONY: claude-link
-claude-link: ## PLUGIN を Claude のスキルディレクトリへ symlink（コピーせず即反映＝開発用）
+claude-link: uninstall-copy ## PLUGIN を Claude のスキルディレクトリへ symlink（コピーせず即反映＝開発用）
 	@mkdir -p $(CLAUDE_SKILLS_DIR)
 	@ln -sfn $(CURDIR)/plugins/$(PLUGIN) $(CLAUDE_SKILLS_DIR)/$(PLUGIN) \
 		&& echo "link  $(CLAUDE_SKILLS_DIR)/$(PLUGIN)  ($(PLUGIN)@skills-dir)"
-	@echo "note: 同名の marketplace 版が入っていると読み込まれない。先に make uninstall すること。"
+
+# 内部ターゲット（help には出さない）。コピー版と symlink は同名だと共存できず
+# marketplace 側が優先されるため、リンクを張る前にコピー版だけを外す。
+# marketplace 登録は残す（update / install で使い回すため）。
+.PHONY: uninstall-copy
+uninstall-copy:
+	@claude plugin uninstall $(PLUGIN)@$(MARKETPLACE) 2>/dev/null || true
 
 .PHONY: claude-unlink
 claude-unlink: ## claude-link で張った symlink を外す

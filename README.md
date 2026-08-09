@@ -62,8 +62,10 @@ symlink 方式では marketplace を経由せず、**その場のファイルが
 Codex にはプラグインの概念が無いのでスキル単位で張る（名前空間も付かない）。
 Claude 側は `plugin list` 上の id が `distillation@skills-dir` になるだけで、呼び出し名は変わらない。
 
-> **同名の marketplace 版が入っていると symlink 側は読み込まれない**（marketplace 版が優先され、
-> `plugin list` に理由つきで表示される）。先に `make uninstall` してから `make install-dev` する。
+> コピー形式とリンク形式は**同名だと共存できない**（marketplace 版が優先され、symlink 側は
+> 読み込まれない）。そのため `make install` / `make install-dev` は互いに競合する側を先に外す。
+> どちらを実行しても切り替わるので、間に片付けのコマンドを挟む必要はない。
+> Codex 側の symlink は Claude と競合しないので、`make install` でも維持される。
 
 > ローカル登録と GitHub 登録は**同じ marketplace 名**（`sasano8-skills`）を名乗るので、
 > 両方を同時には登録できない。切り替えるときは `/plugin marketplace remove sasano8-skills` してから
