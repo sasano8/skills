@@ -1,0 +1,6 @@
+# ローカル作業場（このスキル自身の成果物・課題票。コミットしない）
+.cache/
+
+# エージェント/エディタのローカル設定
+.claude/settings.local.json
+.DS_Store

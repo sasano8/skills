@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "sasano8-skills",
+  "description": "Agent Skills published by sasano8",
+  "owner": {
+    "name": "sasano8",
+    "url": "https://github.com/sasano8"
+  },
+  "plugins": [
+    {
+      "name": "distillation",
+      "source": "./plugins/distillation",
+      "description": "コードから規則・慣習を蒸留して再利用可能なスキル草稿を生成し、未起票の課題をソースの TODO/FIXME/REJECT タグへ還す（コードファースト）。",
+      "category": "development",
+      "tags": ["conventions", "code-review", "documentation", "todo", "refactoring"]
+    }
+  ]
+}
