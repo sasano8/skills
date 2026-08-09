@@ -4,6 +4,8 @@ type: func
 description: 対応方針が決まった課題を workspaces/distillation/<target>/issue/ の課題票から対象ソースの TODO / FIXME / REJECT タグへ転記し、マージ済みの節を削除して正をコードへ一本化する（転記のみ・実修正はしない）。ユーザーが「課題をマージ」「対応方針を反映」「タグへ還す」「方針をソースへ書いて」等を求めたときに使う。一覧するだけなら grep-issues を使う。プロジェクト非依存。
 ---
 
+<!-- TODO: [distill:skill-frontmatter-type-undocumented]: frontmatter の `type: func` を削る（4 スキル共通） -->
+
 # merge-issues — 対応方針をソースのタグへ還す
 
 **先に同じディレクトリの [`reference.md`](reference.md) を読む。** 原則・ディレクトリ体系・config と

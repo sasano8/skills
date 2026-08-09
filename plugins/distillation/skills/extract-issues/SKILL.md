@@ -4,6 +4,8 @@ type: func
 description: コードファーストで対象プロジェクトのコードを読み、まだ起票されていない課題（非互換 / バグ / リファクタリング / 設計不備）を抽出して workspaces/distillation/<target>/issue/ の課題票に起票する。ソース中の既存タグと open 課題を突き合わせて重複起票を避け、起票した課題の対応方針をユーザーへ尋ねる。ユーザーが「課題を抽出」「未起票の課題を洗い出して」「課題を起票」「バグや設計の問題を探して」「issue を作って」等を求めたときに使う。プロジェクト非依存。
 ---
 
+<!-- TODO: [distill:skill-frontmatter-type-undocumented]: frontmatter の `type: func` を削る（4 スキル共通） -->
+
 # extract-issues — コードから未起票の課題を抽出して起票する
 
 **先に同じディレクトリの [`reference.md`](reference.md) を読む。** 原則・ディレクトリ体系・config と
@@ -25,7 +27,13 @@ scope・課題票の書式・タグ文法・モード・設計の根拠はそち
    もらうか、課題票の「対応方針」欄へ直接追記してもらう）。方針が決まったら `merge-issues` を
    続けて実行することを提案する。
 
+<!-- TODO: [distill:extract-issues-ci-behavior-undefined]: 非対話時は起票済みと記入依頼を出力して終了する -->
+<!--   詳細: 手順 5 を非対話でも成立させる。対応方針が未記入の課題は merge-issues では何もせず
+       open のまま残す（この挙動自体は既に merge-issues の手順 5 にある）。 -->
+
 ## 件数の制御
+
+<!-- TODO: [distill:issue-target-value-duplicated]: 既定値の正本を reference.md へ一本化し、ここからは数値を落とす -->
 
 **課題は open 残を含む上限が全レイヤー合計 20 件**（config の `issue_target` で上書き可）:
 

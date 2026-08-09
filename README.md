@@ -227,6 +227,8 @@ Cursor / Gemini CLI / Copilot なども `SKILL.md` 形式を読む方向に寄�
 
 利用側のプロジェクトで、スキル本体を置かずにこの marketplace を参照して実行する:
 
+<!-- TODO: [distill:readme-ci-sample-version-drift]: CI サンプルの action の版を自リポジトリの workflow と揃える -->
+
 ```yaml
 - uses: actions/checkout@v6
 - uses: anthropics/claude-code-action@v1

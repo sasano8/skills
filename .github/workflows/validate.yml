@@ -14,5 +14,6 @@ jobs:
         with:
           node-version: 22
       # 認証は不要（マニフェストと SKILL.md をローカルに検証するだけ）
+      # REJECT: [distill:ci-cli-version-unpinned]: 新しい検査項目を早く拾うために意図的に latest
       - run: npm install -g @anthropic-ai/claude-code@latest
       - run: make validate

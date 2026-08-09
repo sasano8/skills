@@ -4,6 +4,8 @@ type: func
 description: コードファーストで対象プロジェクトのコードを読み、そこから規則・慣習・パターンを抽出（蒸留）して、他プロジェクトでも流用できるスキル草稿を workspaces/distillation/<target>/skill/ に生成・更新する。コードから推測した規則（distilled）とユーザーが強制する規則（rule）を provenance で分け、根拠（file:line）と確度を添える。再実行時はコードとの差分で更新する。ユーザーが「規則を抽出」「規約をスキル化」「コード規約をまとめて」「コードから規約を抽出」「蒸留して」「distill」等を求めたときに使う。プロジェクト非依存。
 ---
 
+<!-- TODO: [distill:skill-frontmatter-type-undocumented]: frontmatter の `type: func` を削る（4 スキル共通） -->
+
 # extract-rules — コードから規則を蒸留してスキル草稿にする
 
 **先に同じディレクトリの [`reference.md`](reference.md) を読む。** 原則・ディレクトリ体系・config と
