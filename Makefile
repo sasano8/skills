@@ -31,7 +31,7 @@ validate: ## marketplace と全プラグインのマニフェストを検証
 	@for p in $(PLUGINS); do claude plugin validate ./plugins/$$p --strict || exit 1; done
 
 .PHONY: install
-install: claude-unlink ## このリポジトリをローカル marketplace として登録し PLUGIN をインストール
+install: uninstall-dev ## このリポジトリをローカル marketplace として登録し PLUGIN をインストール
 	claude plugin marketplace add $(CURDIR)
 	claude plugin install $(PLUGIN)@$(MARKETPLACE) --scope $(SCOPE)
 
