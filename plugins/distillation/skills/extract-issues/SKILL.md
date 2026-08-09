@@ -4,25 +4,28 @@ type: func
 description: コードファーストで対象プロジェクトのコードを読み、まだ起票されていない課題（非互換 / バグ / リファクタリング / 設計不備）を抽出して workspaces/distillation/<target>/issue/ の課題票に起票する。ソース中の既存タグと open 課題を突き合わせて重複起票を避け、起票した課題の対応方針をユーザーへ尋ねる。ユーザーが「課題を抽出」「未起票の課題を洗い出して」「課題を起票」「バグや設計の問題を探して」「issue を作って」等を求めたときに使う。プロジェクト非依存。
 ---
 
-<!-- TODO: [distill:skill-frontmatter-type-undocumented]: frontmatter の `type: func` を削る（4 スキル共通） -->
+<!-- TODO: [distill:skill-frontmatter-type-undocumented]: frontmatter の `type: func` を削る（5 スキル共通） -->
 
 # extract-issues — コードから未起票の課題を抽出して起票する
 
 **先に同じディレクトリの [`reference.md`](reference.md) を読む。** 原則・ディレクトリ体系・config と
 scope・課題票の書式・タグ文法・モード・設計の根拠はそちらが正本で、ここには書かない。
 
-このスキルの責務は**課題票への起票まで**。ソースへの転記（還流）は `merge-issues` が持つ。
-課題票は一時的な作業場であり、正はソース側であることを忘れない。
+このスキルの責務は**読解による課題の発見と起票まで**。課題の管理場所・課題票の書式は
+`track-issues` が司る規定（定義は同じ `reference.md`）に従い、ソースへの転記（還流）は
+`merge-issues` が持つ。課題票は一時的な作業場であり、正はソース側であることを忘れない。
 
 ## 手順
 
-1. **scope 確定** — `reference.md`「config と scope」のとおり config を読む／初回は仮 config で走る。
+1. **宣言と scope 確定** — `reference.md`「課題管理の宣言」を確認する（規約ファイルに宣言が
+   無ければ、distillation で課題管理を行うかを確認して宣言を書いてから進む）。次に「config と
+   scope」のとおり config を読む／初回は仮 config で走る。
 2. **読解** — scope.code を読み、**起票されていない課題**を拾う。ソース中の TODO grep だけでなく、
    コードとドキュメントの矛盾・怪しい実装・設計の歪みも対象。
 3. **重複判定** — `reference.md`「タグの列挙（grep 仕様）」で既存タグを取り、既存の open 節と
    突き合わせる。**既知の課題（open・採用済み・却下・保留）は再起票しない**。
-4. **起票** — `reference.md`「課題票の書式」に従って `issue/<layer>.md` へ 1 課題 1 節で書く。
-   layer は incompat / bug / refactor / design。
+4. **起票** — `track-issues` の規定（`reference.md`「課題票の書式」）に従って `issue/<layer>.md` へ
+   1 課題 1 節で書く。layer は incompat / bug / refactor / design。
 5. **提示** — 起票した課題の一覧をユーザーへ提示し、各課題をどうするか尋ねる（対話で回答して
    もらうか、課題票の「対応方針」欄へ直接追記してもらう）。方針が決まったら `merge-issues` を
    続けて実行することを提案する。

@@ -20,12 +20,18 @@
 
 | スキル | 責務 |
 | --- | --- |
-| [`audit`](skills/audit/) | 品質規約 R1〜R17 に照らして監査し、問題点を列挙してタスク化する |
+| [`audit`](skills/audit/) | 品質規約 R1〜R17 に照らして監査し、問題点を列挙してタスク化する（即応しない指摘は課題票へ先送り） |
 | [`mkdocs`](skills/mkdocs/) | MkDocs（Material）の docs サイトと GitHub Pages 公開 CI を整える |
 | [`release-pypi`](skills/release-pypi/) | 配布物を PyPI へ公開するリリース CI を整える（Trusted Publishing 既定） |
 
 規約・雛形・共通原則の正本は [`reference.md`](reference.md)。各 SKILL.md は自分の関心の差分だけを持ち、
 規約を再記載しない（コピペは drift 源）。
+
+監査の指摘を今すぐ直すか迷うときは**課題として先送り**できる。受け皿は対象リポジトリの規約ファイル
+（AGENTS.md / CLAUDE.md）の課題管理の宣言（`issue-tracking: <起票を担うスキル>`）で解決し、
+指定されたスキルに従って起票する。宣言が無ければ保留の列挙に留める。仕組みの中身は指定された
+スキル側の文書が正本（このプラグインは知らない）。
+詳細は [`reference.md`](reference.md)「先送りする指摘の扱い」。
 
 ## 3 スキルの関係
 

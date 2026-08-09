@@ -48,11 +48,12 @@ flowchart TD
 
 現状のタグと未処理の課題を見るだけなら `grep-issues`（read-only）。この輪の外側にあり、何も書かない。
 
-## 4 つのスキル
+## 5 つのスキル
 
 | スキル | 動作 | 書き込み先 |
 | --- | --- | --- |
 | `/distillation:extract-rules` | scope 確定 → 読解 → スキル草稿の生成/更新（規則抽出） | `skill/` |
+| `/distillation:track-issues` | 課題管理の規定（管理場所・書式・タグ文法）の正本 ＋ 持ち込まれた課題の起票（入口） | `issue/` |
 | `/distillation:extract-issues` | scope 確定 → 読解 → 未起票の課題を起票 → 対応方針を尋ねる（課題抽出） | `issue/` |
 | `/distillation:merge-issues` | 対応方針をソースのタグへ**転記**（還流） | 対象ソース、`issue/` |
 | `/distillation:grep-issues` | ソースの `TODO:｜FIXME:｜REJECT:` と open 課題票を一覧 | **書かない（read-only）** |
@@ -60,9 +61,19 @@ flowchart TD
 蒸留＝**抽出（extract）→ 濃縮 → 還流（merge）** のプロセス全体の名前で、各スキルはその工程にあたる。
 転記は転記だけを行い、実修正はしない。
 
+課題がどこに・どの書式で管理されるかは `track-issues` が司る規定で、課題を書く・読むスキルは
+それに従う。課題は `extract-issues` の読解だけでなく、外部（品質監査の先送りなど）から
+`track-issues` 経由でも持ち込まれる — どちらも同じ課題票・同じ輪に乗る。
+
+課題票へ書くスキルは、対象プロジェクトの規約ファイル（AGENTS.md / CLAUDE.md）に**課題管理の宣言**
+（`issue-tracking: distillation/track-issues` — 値は規定と起票を担う入口スキルを指す）があることを
+前提にする — 無ければ発動時に確認して書く。
+品質監査など他の仕組みは、この宣言を見て先送り課題の起票先を解決する
+（詳細は [`reference.md`](reference.md)「課題管理の宣言」）。
+
 共通定義（原則・ディレクトリ体系・config と scope・課題票の書式・タグ文法・モード・設計の根拠）は
 [`reference.md`](reference.md) が正本で、各 SKILL.md は自分の手順だけを持つ。
-4 スキルはプラグインルートの実体を `skills/<name>/reference.md` の symlink で共有している
+5 スキルはプラグインルートの実体を `skills/<name>/reference.md` の symlink で共有している
 （この方式を選んだ理由と Windows 非対象の注記は
 [リポジトリ README](../../README.md#スキル間で定義を共有するsymlink-方式)）。
 
@@ -82,6 +93,7 @@ CI で回すのは `extract-rules` / `extract-issues`（起票まで）と `grep
 
 - 共通定義: [`reference.md`](reference.md)
 - 各スキルの手順: [`extract-rules`](skills/extract-rules/SKILL.md) /
+  [`track-issues`](skills/track-issues/SKILL.md) /
   [`extract-issues`](skills/extract-issues/SKILL.md) /
   [`merge-issues`](skills/merge-issues/SKILL.md) /
   [`grep-issues`](skills/grep-issues/SKILL.md)

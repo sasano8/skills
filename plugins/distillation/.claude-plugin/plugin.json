@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "distillation",
   "displayName": "Distillation",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "コードから規則・慣習を蒸留して再利用可能なスキル草稿を生成し、未起票の課題をソースの TODO/FIXME/REJECT タグへ還す（コードファースト）。",
   "author": {
     "name": "sasano8",

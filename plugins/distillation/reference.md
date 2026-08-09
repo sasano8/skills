@@ -1,6 +1,7 @@
 # distillation 共通リファレンス
 
-`extract-rules` / `extract-issues` / `merge-issues` / `grep-issues` の 4 スキルが共有する定義。
+`extract-rules` / `track-issues` / `extract-issues` / `merge-issues` / `grep-issues` の
+5 スキルが共有する定義。
 各 SKILL.md はこのファイルを**手順の正本として参照する**（同じ内容を各 SKILL.md へ再記載しない）。
 
 <!-- TODO: [distill:reference-loaded-wholesale]: 各 SKILL.md の読み込み指示を節指定にする -->
@@ -30,15 +31,21 @@
 | スキル | 責務 | 書き込み先 |
 | --- | --- | --- |
 | `extract-rules` | 規則抽出 → スキル草稿の生成/更新 | `skill/` |
-| `extract-issues` | 課題抽出 → 課題票への起票 | `issue/` |
+| `track-issues` | 課題管理の規定（管理場所・課題票の書式・タグ文法）＋持ち込まれた課題の起票（入口） | `issue/` |
+| `extract-issues` | 読解による課題の発見 → 起票 | `issue/` |
 | `merge-issues` | 対応方針をソースのタグへ転記（還流） | 対象プロジェクトのソース、`issue/` |
 | `grep-issues` | ソースのタグと open 課題票の一覧 | **書かない（read-only）** |
+
+課題を書く・読むスキル（`extract-issues` / `merge-issues` / `grep-issues`）は、課題の管理場所・
+課題票の書式・タグ文法を **`track-issues` が司る規定**として参照する（定義の実体はこの
+reference.md の当該節。下記「課題票の書式」）。外部の仕組みが課題を持ち込むときの入口も
+`track-issues`（下記「課題管理の宣言」）。
 
 `extract-rules` と `extract-issues` は同じ読解を土台にする。片方を実行したあと、同じ scope の読解が
 まだ有効なうちにもう片方を続けて実行するのが効率的（実行の順序自体に依存関係はない）。
 
-書き込むスキル（`extract-*` / `merge-issues`）と読むだけのスキル（`grep-issues`）を分けてあるので、
-現状を見たいだけのときに書き込み可能なスキルを起動しなくてよい。
+書き込むスキル（`extract-*` / `track-issues` / `merge-issues`）と読むだけのスキル（`grep-issues`）を
+分けてあるので、現状を見たいだけのときに書き込み可能なスキルを起動しなくてよい。
 
 ## ディレクトリ体系（既定値）
 
@@ -106,7 +113,7 @@ distillation-workspace: docs/distillation/
 
 ### 規約ファイルへの宣言を書く
 
-宣言（①）を**書き込む**ときの手順。`CLAUDE.md` と `AGENTS.md` は同じ内容を指していることが
+宣言（①や下記「課題管理の宣言」）を**書き込む**ときの手順。`CLAUDE.md` と `AGENTS.md` は同じ内容を指していることが
 あるので、**先に 2 つの関係を調べてから書く**。無条件に両方へ書くと二重記載になり、
 片方だけ直る事故を招く（正の二重化を避ける、という原則はここにも効く）。
 
@@ -122,12 +129,37 @@ distillation-workspace: docs/distillation/
 調べ方: `test -L CLAUDE.md` で symlink を判定し、`grep -n '@AGENTS\.md' CLAUDE.md` で import 行を探す
 （import はコードブロック内だと無効なので、バッククォートに囲まれていないことも確認する）。
 
-書き換えは `distillation-workspace:` の行だけを対象にする。既にその行があれば**置き換える**
-（追記して 2 行にしない）。規約ファイルの他の内容には触れない。
+書き換えは `distillation-workspace:` / `issue-tracking:` の行だけを対象にする。既にその行が
+あれば**置き換える**（追記して 2 行にしない）。規約ファイルの他の内容には触れない。
 
 このスキル群のうち規約ファイルを書き換えてよいのは `extract-rules` / `extract-issues` /
-`merge-issues` で、作業場の場所が既定から外れると決まったときだけ。`grep-issues` は read-only
-なので、ずれを見つけても報告するに留める。書き込みは `mode` に従う（confirm なら確認してから）。
+`merge-issues` で、作業場の場所が既定から外れると決まったとき、および課題管理の宣言（下記）を
+書くときだけ。`grep-issues` は read-only なので、ずれを見つけても報告するに留める。
+書き込みは `mode` に従う（confirm なら確認してから）。
+
+### 課題管理の宣言（issue-tracking）
+
+課題を distillation で管理するプロジェクトは、規約ファイルに次の 1 行を宣言する:
+
+```markdown
+issue-tracking: distillation/track-issues
+```
+
+`distillation-workspace:`（どこに置くか）とは別物で、これは「**課題管理をこの仕組みで行う**」という
+**方法**の宣言。**値は課題管理の規定と起票を担う入口スキル**（`<プラグイン>/<スキル>`。このプラグインなら
+`distillation/track-issues` — 管理場所・書式の規定を司るスキルで、発見・還流・一覧など他の工程も
+そこから辿れる）。
+参照する側（例: 品質監査が先送りする指摘を課題化するとき）は、値を固定の綴りとして照合するのでは
+なく、**指定されたスキルを解決してそれに従って起票する** — 宣言の無いプロジェクトへ外から勝手に
+起票させないための取り決めでもある。作業場の宣言と違い、**既定でも省略しない**（参照する側が
+「無い＝課題管理していない」と読むため）。
+
+- **課題票へ書くスキル（`track-issues` / `extract-issues` / `merge-issues`、および課題へ回すときの
+  `extract-rules`）の発動時**: 規約ファイルにこの宣言が無ければ、課題管理を distillation で行うかをユーザーへ確認し、
+  合意を得て宣言を書いてから進む（書き込み先の選び方は上記「規約ファイルへの宣言を書く」と同じ）。
+  合意が得られなければ起票・転記へ進まない。**別の仕組みが宣言されているとき**は、置き換えるのか
+  今回限りの併用なのかを確認する（黙って二重管理にしない）。
+- `grep-issues` は read-only なので、宣言が無くても一覧する（確認も書き込みもしない）。
 
 ### git 追跡の扱い
 
@@ -175,10 +207,13 @@ updated: <yyyy-mm-dd>
 - **次回以降**: config を読んで scope を流用する。実態と乖離していれば（新ディレクトリの出現、
   消えたパス等）拡大・縮小を提案し、合意の上で config を更新する（勝手に広げない）。
 
-この scope 確定は 4 スキルすべての最初の手順として共通（`grep-issues` は read-only なので、
+この scope 確定は 5 スキルすべての最初の手順として共通（`grep-issues` は read-only なので、
 config が無くても仮 config を書かずに推定した scope で一覧するに留める）。
 
 ## 課題票の書式
+
+この節と「タグ文法（マージ書式）」「タグの列挙（grep 仕様）」は **`track-issues` が司る規定**。
+課題を書く・読む側（スキル・外部の仕組み）はここを正本として参照する。
 
 課題は成果物（`skill/`）とは別に `issue/` で管理する。**レイヤー毎に 1 ファイル**
 （課題ごとにファイルは作らない）:

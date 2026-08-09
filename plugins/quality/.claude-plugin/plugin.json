@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "quality",
   "displayName": "Quality",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "プロジェクトの品質規約を正本として持ち、リポジトリを監査して是正をタスク化する。docs サイトと PyPI リリースの公開 CI も、CI を割らない安全な guard 付きで整える（Python + uv）。",
   "author": {
     "name": "sasano8",
