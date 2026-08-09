@@ -7,7 +7,7 @@ Claude Code のプラグイン marketplace。`plugins/<name>/` が各プラグ�
 
 ```sh
 make validate      # marketplace と全プラグインのマニフェスト・SKILL.md を検証（--strict）
-make install-link  # Claude と Codex の両方へ symlink（開発用）
+make install-dev   # Claude と Codex の両方へ symlink（開発用）
 make uninstall     # 導入をすべて外す
 ```
 

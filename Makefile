@@ -40,15 +40,15 @@ update: ## marketplace のカタログを取り直す
 
 .PHONY: uninstall
 # REJECT: [distill:make-uninstall-drops-shared-marketplace]: install が marketplace 全体を登録する以上、uninstall が全体を外すのは対称で一貫している
-uninstall: uninstall-link ## PLUGIN の導入をすべて外す（コピー / marketplace 登録 / Claude・Codex の symlink）
+uninstall: uninstall-dev ## PLUGIN の導入をすべて外す（コピー / marketplace 登録 / Claude・Codex の symlink）
 	@claude plugin uninstall $(PLUGIN)@$(MARKETPLACE) 2>/dev/null || echo "skip  コピー版は未インストール"
 	@claude plugin marketplace remove $(MARKETPLACE) 2>/dev/null || echo "skip  marketplace は未登録"
 
-.PHONY: install-link
-install-link: claude-link codex-link ## Claude と Codex の両方へ symlink する（コピーせず即反映＝開発用）
+.PHONY: install-dev
+install-dev: claude-link codex-link ## Claude と Codex の両方へ symlink する（コピーせず即反映＝開発用）
 
-.PHONY: uninstall-link
-uninstall-link: claude-unlink codex-unlink ## Claude・Codex の symlink だけを外す（コピーは残す）
+.PHONY: uninstall-dev
+uninstall-dev: claude-unlink codex-unlink ## Claude・Codex の symlink だけを外す（コピーは残す）
 
 .PHONY: claude-link
 claude-link: ## PLUGIN を Claude のスキルディレクトリへ symlink（コピーせず即反映＝開発用）
