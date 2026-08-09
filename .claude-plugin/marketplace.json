@@ -17,9 +17,9 @@
     {
       "name": "onboarding",
       "source": "./plugins/onboarding",
-      "description": "開発マシン／新環境を冪等・非破壊にオンボーディングする。版管理された dotfiles の反映（配布方式の選び分け付き）と、シークレット混入を commit 前に止めるグローバルガードの 2 本立て。",
+      "description": "開発マシン／新環境を冪等・非破壊にオンボーディングする。エージェント本体（Claude Code / Codex CLI）の導入、版管理された dotfiles の反映（配布方式の選び分け付き）、シークレット混入を commit 前に止めるグローバルガードの 3 本立て。",
       "category": "development",
-      "tags": ["onboarding", "dotfiles", "setup", "secrets", "gitleaks", "pre-commit"]
+      "tags": ["onboarding", "dotfiles", "setup", "install", "claude-code", "codex", "secrets", "gitleaks", "pre-commit"]
     },
     {
       "name": "distillation",

@@ -1,9 +1,10 @@
 # onboarding 共通リファレンス
 
-`env-bootstrap` / `secret-guard` の 2 スキルが共有する定義。
+`agent-install` / `env-bootstrap` / `secret-guard` の 3 スキルが共有する定義。
 各 SKILL.md はこのファイルを**原則と進め方の正本として参照する**（同じ内容を各 SKILL.md へ再記載しない）。
 
-対象は**マシン／グローバル設定**（`~` 配下・`git config --global`）。特定プロジェクトの中身は扱わない。
+対象は**マシン／グローバル設定**（`~` 配下・`git config --global`）と、そこへ入れる**エージェント本体**。
+特定プロジェクトの中身は扱わない。
 
 ## 原則
 

@@ -16,6 +16,7 @@
 
 | スキル | 責務 |
 | --- | --- |
+| [`agent-install`](skills/agent-install/) | エージェント本体（Claude Code / Codex CLI）をマシンへ入れる。導入方式の選び分け（自動更新が効くか）と認証まで |
 | [`env-bootstrap`](skills/env-bootstrap/) | 版管理された dotfiles をマシンへ反映する。配線の点検と、配布方式（symlink / マージ注入 / marketplace）の選び分け |
 | [`secret-guard`](skills/secret-guard/) | シークレット混入を commit 前に止める（gitleaks + global pre-commit + secret baseline） |
 
