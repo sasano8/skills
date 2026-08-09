@@ -216,10 +216,13 @@ issue/
   直後のコメント行（タグなし）へ続ける — 詳細は grep（タグの列挙）で表示されなくてよい:
 
   ```python
-  # TODO: [distill:container-facade-incomplete]: scheduler 系 getter の facade 追加
-  #   詳細: get_scheduler_settings / get_scheduler_executor が Container に未転写。
-  #   背景・根拠・方針の補足はここに自由に書く（grep 対象外でよい）。
+  # TODO: [distill:<slug>]: <1 行の要約。ここだけが grep に出る>
+  #   詳細: <対象・観察した事実・方針の補足>。
+  #   背景・根拠はここに自由に書いてよい（grep 対象外）。
   ```
+
+> 例のスラッグを実名にしないこと。この文書自体が `grep-issues` の走査対象なので、
+> 実在しそうなスラッグを書くと未処理の課題として拾われる。
 
 - タグはそのファイル形式で無害なコメントとして埋める（Markdown なら HTML コメント等。ドキュメントも
   ソースと同じ扱いでタグ管理する）。
