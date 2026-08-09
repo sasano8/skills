@@ -25,10 +25,18 @@ make uninstall     # 導入をすべて外す（settings.json の取り残しも
   Codex など他エージェントへそのまま流用できる状態を保つ。
 - `plugin.json` の `version` を上げたときだけ利用者に更新が届く。リリースのたびに bump する。
 
-## 作業場
+## 課題管理
 
-`distillation` スキルの成果物・課題票は `workspaces/distillation/<target>/` にある
-（`workspaces/<skill>/` はスキル共通の作業場置き場）。既定の場所なので
+このリポジトリの課題管理は distillation で行う（quality の監査もこの宣言を見て先送り課題を起票する）:
+
+issue-tracking: distillation/track-issues
+
+## 作業領域
+
+プラグインごとの作業領域は `workspaces/<plugin>/<target>/` で管理する。`distillation` の成果物・課題票は
+`workspaces/distillation/<target>/` に置く。
+
+`workspaces/<skill>/` はスキル共通の作業場置き場で、既定の場所なので
 `distillation-workspace:` の宣言は置いていない — 場所は探索で解決される。
 
 プラグイン実体の `plugins/distillation/` とは別物なので取り違えないこと。
