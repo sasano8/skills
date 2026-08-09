@@ -74,6 +74,9 @@ Claude 側は `plugin list` 上の id が `distillation@skills-dir` になるだ
 > 逆向きも同じで、`make install-dev` はコピー形式の痕跡（プラグイン・marketplace 登録・
 > `settings.json` の記述）をすべて外してから symlink を張る。片方だけを外したいときは
 > `make uninstall-copy` / `make uninstall-dev`。
+>
+> symlink の除去は**リンク先がこのリポジトリかどうか**で判定する（リンク名では判定しない）。
+> スキルを改名・削除しても古いリンクが取り残されないため。他のリポジトリを指すリンクには触れない。
 
 > ローカル登録と GitHub 登録は**同じ marketplace 名**（`sasano8-skills`）を名乗るので、
 > 両方を同時には登録できない。切り替えるときは `/plugin marketplace remove sasano8-skills` してから

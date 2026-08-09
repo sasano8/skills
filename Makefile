@@ -50,7 +50,7 @@ install-dev: claude-link codex-link ## Claude と Codex の両方へ symlink す
 uninstall-dev: claude-unlink codex-unlink ## Claude・Codex の symlink だけを外す（コピーは残す）
 
 .PHONY: claude-link
-claude-link: uninstall-copy ## PLUGIN を Claude のスキルディレクトリへ symlink（コピーせず即反映＝開発用）
+claude-link: uninstall-copy claude-unlink ## PLUGIN を Claude のスキルディレクトリへ symlink（コピーせず即反映＝開発用）
 	@mkdir -p $(CLAUDE_SKILLS_DIR)
 	@ln -sfn $(CURDIR)/plugins/$(PLUGIN) $(CLAUDE_SKILLS_DIR)/$(PLUGIN) \
 		&& echo "link  $(CLAUDE_SKILLS_DIR)/$(PLUGIN)  ($(PLUGIN)@skills-dir)"
@@ -62,9 +62,11 @@ uninstall-copy: ## コピー形式だけを外す（プラグイン・marketplac
 	@node scripts/forget-marketplace.mjs $(MARKETPLACE)
 
 .PHONY: claude-unlink
-claude-unlink: ## claude-link で張った symlink を外す
-	@l=$(CLAUDE_SKILLS_DIR)/$(PLUGIN); \
-		if [ -L "$$l" ]; then rm "$$l" && echo "unlink $$l"; else echo "no link at $$l"; fi
+claude-unlink: ## Claude のスキルディレクトリから、このリポジトリを指す symlink を外す
+	@for l in $(CLAUDE_SKILLS_DIR)/*; do \
+		[ -L "$$l" ] || continue; \
+		case "$$(readlink "$$l")" in "$(CURDIR)"/*) rm "$$l" && echo "unlink $$l";; esac; \
+	done
 
 .PHONY: tag-dryrun
 tag-dryrun: validate ## 打たれるタグ名を確認するだけ（何も作らない）
@@ -75,15 +77,15 @@ tag: validate ## plugin.json の version で release タグを打つ（PUSH=1 �
 	claude plugin tag ./plugins/$(PLUGIN) $(if $(PUSH),--push --remote $(REMOTE),)
 
 .PHONY: codex-link
-codex-link: ## 全スキルを Codex のスキルディレクトリへ symlink する
+codex-link: codex-unlink ## 全スキルを Codex のスキルディレクトリへ symlink する
 	@mkdir -p $(SKILLS_DIR)
 	@for s in plugins/*/skills/*; do \
 		ln -sfn $(CURDIR)/$$s $(SKILLS_DIR)/$$(basename $$s) && echo "link  $(SKILLS_DIR)/$$(basename $$s)"; \
 	done
 
 .PHONY: codex-unlink
-codex-unlink: ## codex-link で張った symlink を外す
-	@for s in plugins/*/skills/*; do \
-		l=$(SKILLS_DIR)/$$(basename $$s); \
-		if [ -L "$$l" ]; then rm "$$l" && echo "unlink $$l"; fi; \
+codex-unlink: ## Codex のスキルディレクトリから、このリポジトリを指す symlink を外す
+	@for l in $(SKILLS_DIR)/*; do \
+		[ -L "$$l" ] || continue; \
+		case "$$(readlink "$$l")" in "$(CURDIR)"/*) rm "$$l" && echo "unlink $$l";; esac; \
 	done
