@@ -3,7 +3,10 @@ PLUGINS     := $(notdir $(wildcard plugins/*))
 PLUGIN      ?= distillation
 SCOPE       ?= user
 REMOTE      ?= origin
+# Codex のスキルディレクトリ
 SKILLS_DIR  ?= $(HOME)/.agents/skills
+# Claude のスキルディレクトリ（@skills-dir として その場で読まれる）
+CLAUDE_SKILLS_DIR ?= $(HOME)/.claude/skills
 
 .DEFAULT_GOAL := help
 
@@ -12,7 +15,9 @@ help: ## このヘルプを表示
 	@grep -hE '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) \
 		| awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
 	@echo ""
-	@echo "  変数: PLUGIN=$(PLUGIN)  SCOPE=$(SCOPE)  REMOTE=$(REMOTE)  SKILLS_DIR=$(SKILLS_DIR)"
+	@echo "  変数: PLUGIN=$(PLUGIN)  SCOPE=$(SCOPE)  REMOTE=$(REMOTE)"
+	@echo "        SKILLS_DIR=$(SKILLS_DIR)"
+	@echo "        CLAUDE_SKILLS_DIR=$(CLAUDE_SKILLS_DIR)"
 
 .PHONY: validate
 validate: ## marketplace と全プラグインのマニフェストを検証
@@ -33,9 +38,27 @@ update: ## marketplace のカタログを取り直す
 	claude plugin marketplace update $(MARKETPLACE)
 
 .PHONY: uninstall
-uninstall: ## PLUGIN をアンインストールし marketplace の登録を外す
-	-claude plugin uninstall $(PLUGIN)@$(MARKETPLACE)
-	claude plugin marketplace remove $(MARKETPLACE)
+uninstall: uninstall-link ## PLUGIN の導入をすべて外す（コピー / marketplace 登録 / Claude・Codex の symlink）
+	@claude plugin uninstall $(PLUGIN)@$(MARKETPLACE) 2>/dev/null || echo "skip  コピー版は未インストール"
+	@claude plugin marketplace remove $(MARKETPLACE) 2>/dev/null || echo "skip  marketplace は未登録"
+
+.PHONY: install-link
+install-link: claude-link codex-link ## Claude と Codex の両方へ symlink する（コピーせず即反映＝開発用）
+
+.PHONY: uninstall-link
+uninstall-link: claude-unlink codex-unlink ## Claude・Codex の symlink だけを外す（コピーは残す）
+
+.PHONY: claude-link
+claude-link: ## PLUGIN を Claude のスキルディレクトリへ symlink（コピーせず即反映＝開発用）
+	@mkdir -p $(CLAUDE_SKILLS_DIR)
+	@ln -sfn $(CURDIR)/plugins/$(PLUGIN) $(CLAUDE_SKILLS_DIR)/$(PLUGIN) \
+		&& echo "link  $(CLAUDE_SKILLS_DIR)/$(PLUGIN)  ($(PLUGIN)@skills-dir)"
+	@echo "note: 同名の marketplace 版が入っていると読み込まれない。先に make uninstall すること。"
+
+.PHONY: claude-unlink
+claude-unlink: ## claude-link で張った symlink を外す
+	@l=$(CLAUDE_SKILLS_DIR)/$(PLUGIN); \
+		if [ -L "$$l" ]; then rm "$$l" && echo "unlink $$l"; else echo "no link at $$l"; fi
 
 .PHONY: tag-dryrun
 tag-dryrun: validate ## 打たれるタグ名を確認するだけ（何も作らない）

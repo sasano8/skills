@@ -33,23 +33,56 @@ Claude Code のセッション内で 2 行:
 
 ### 開発するなら — 手元の clone から
 
-clone したディレクトリをそのまま marketplace として登録する。GitHub へ push せずに、
-利用者と同じ「marketplace から install する」経路を通して確認できる。
-
 ```sh
 git clone https://github.com/sasano8/skills ~/projects/skills
 cd ~/projects/skills
-make install            # PLUGIN=<name> SCOPE=user|project|local
-make uninstall
 ```
 
-インストール時にプラグインは `~/.claude/plugins/cache/` へ**コピー**されるので、repo を編集しても
-そのままでは反映されない。編集を取り込むには `make update` → `/reload-plugins`。
-書いている最中の試行は、コピーを挟まない **`make dev`**（`--plugin-dir` で直接読ませる）のほうが速い。
+やりたいことで 3 通りある。**`make install` はコピー方式**なので、編集しながら常用したいなら
+`make install-link` を選ぶ。
+
+| 方法 | 実体 | 編集の反映 | 使う場面 |
+| --- | --- | --- | --- |
+| `make install-link` | **symlink** | SKILL.md は即時。他の要素は `/reload-plugins` | **開発しながら日常的に使う** |
+| `make dev` | 参照のみ（`--plugin-dir`） | `/reload-plugins` | このリポジトリで作業しながら試す |
+| `make install` | **コピー**（`~/.claude/plugins/cache/`） | `make update` → `/reload-plugins` | 利用者と同じ install 経路で受け入れ確認する |
+
+```sh
+make install-link       # Claude と Codex の両方へ symlink（PLUGIN=<name>）
+make uninstall          # 導入をすべて外す（コピー / marketplace 登録 / 両方の symlink）
+```
+
+`make uninstall` は**入れ方に関わらず全部を外す**片付け用で、入っていないものは `skip` と出して
+止まらない。symlink だけ外してコピー版は残したいときは `make uninstall-link`。
+
+symlink 方式では marketplace を経由せず、**その場のファイルが読まれる**（キャッシュへコピーされない）。
+リンク先は 2 系統で、片方だけなら `claude-link` / `codex-link` を個別に呼ぶ:
+
+| | リンク先 | 単位 | 呼び出し名 |
+| --- | --- | --- | --- |
+| Claude | `~/.claude/skills/<plugin>` | プラグイン 1 つ | `/distillation:extract-rules` |
+| Codex | `~/.agents/skills/<skill>` | スキルごと | `$extract-rules` |
+
+Codex にはプラグインの概念が無いのでスキル単位で張る（名前空間も付かない）。
+Claude 側は `plugin list` 上の id が `distillation@skills-dir` になるだけで、呼び出し名は変わらない。
+
+> **同名の marketplace 版が入っていると symlink 側は読み込まれない**（marketplace 版が優先され、
+> `plugin list` に理由つきで表示される）。先に `make uninstall` してから `make install-link` する。
 
 > ローカル登録と GitHub 登録は**同じ marketplace 名**（`sasano8-skills`）を名乗るので、
 > 両方を同時には登録できない。切り替えるときは `/plugin marketplace remove sasano8-skills` してから
 > もう一方を add する。
+
+
+## アンインストール
+
+インストールしたプラグインは以下で削除できます。
+
+```
+make uninstall
+```
+
+削除されるプラグインはコピーされたもの、リンクされたもの両対応です。
 
 ---
 
@@ -161,7 +194,7 @@ Codex は次の順でスキルディレクトリを走査する:
 なので、marketplace は使わず**ディレクトリを置く／symlink する**だけでよい:
 
 ```sh
-make codex-link      # 全スキルを ~/.agents/skills へ symlink
+make codex-link      # 全スキルを ~/.agents/skills へ symlink（Claude と両方なら make install-link）
 make codex-unlink
 ```
 
