@@ -29,10 +29,6 @@ validate: ## marketplace と全プラグインのマニフェストを検証
 	@claude plugin validate . --strict
 	@for p in $(PLUGINS); do claude plugin validate ./plugins/$$p --strict || exit 1; done
 
-.PHONY: dev
-dev: ## PLUGIN を直接読ませて Claude Code を起動（marketplace を経由しない）
-	claude --plugin-dir ./plugins/$(PLUGIN)
-
 .PHONY: install
 install: ## このリポジトリをローカル marketplace として登録し PLUGIN をインストール
 	claude plugin marketplace add $(CURDIR)

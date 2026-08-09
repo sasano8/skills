@@ -38,13 +38,12 @@ git clone https://github.com/sasano8/skills ~/projects/skills
 cd ~/projects/skills
 ```
 
-やりたいことで 3 通りある。**`make install` はコピー方式**なので、編集しながら常用したいなら
+導入の仕方は 2 通り。**`make install` はコピー方式**なので、編集しながら常用したいなら
 `make install-link` を選ぶ。
 
 | 方法 | 実体 | 編集の反映 | 使う場面 |
 | --- | --- | --- | --- |
-| `make install-link` | **symlink** | SKILL.md は即時。他の要素は `/reload-plugins` | **開発しながら日常的に使う** |
-| `make dev` | 参照のみ（`--plugin-dir`） | `/reload-plugins` | このリポジトリで作業しながら試す |
+| `make install-link` | **symlink** | SKILL.md は即時。他の要素は `/reload-plugins` | **開発するならこれ** |
 | `make install` | **コピー**（`~/.claude/plugins/cache/`） | `make update` → `/reload-plugins` | 利用者と同じ install 経路で受け入れ確認する |
 
 ```sh
@@ -91,7 +90,6 @@ make uninstall
 定形タスクは [Makefile](Makefile) にある。`make` で一覧。
 
 ```sh
-make dev        # marketplace を経由せず ./plugins/<PLUGIN> を直接読ませて起動
 make validate   # marketplace と全プラグインのマニフェストを検証
 make update     # marketplace のカタログを取り直す
 make tag-dryrun # 打たれる release タグ名を確認するだけ
@@ -100,11 +98,20 @@ make tag        # release タグを打つ（PUSH=1 で origin へ push まで）
 
 対象プラグインは `PLUGIN=<name>` で切り替える（既定 `distillation`）。
 
-`make dev` 中はプラグインを編集して `/reload-plugins` で反映できる（再起動不要）。
-同名のプラグインが既にインストール済みでも、`--plugin-dir` のほうがそのセッションでは優先される。
+`make install-link` してあれば、プラグインを編集して `/reload-plugins` で反映できる（再起動不要）。
+SKILL.md の編集はセッション中に即反映される。
 
 > `/reload-plugins` のスキル件数は `commands/` しか数えないので、`skills/` しか持たないプラグインでは
 > `0 skills` と表示されることがある。読み込まれていないという意味ではない。
+
+グローバルに symlink を張らず**そのセッションだけ**で試したいときは、素のフラグを使う:
+
+```sh
+claude --plugin-dir ./plugins/<name>
+```
+
+同名のプラグインが既にインストール済みでも、そのセッションではこちらが優先される。
+名前が衝突する 2 版を並べて比べたいときくらいしか出番がないので、`make` のターゲットにはしていない。
 
 ### リポジトリ構成
 
@@ -142,7 +149,7 @@ workspaces/                          # スキルの作業場置き場（workspac
 2. `plugins/<name>/skills/<skill>/SKILL.md` を書く（frontmatter は `name` と `description` が要。`description` は
    「いつ使うか」を具体的に書く — Claude はここだけを見て起動を判断する）
 3. ルートの `.claude-plugin/marketplace.json` の `plugins` に `{"name": ..., "source": "./plugins/<name>", ...}` を足す
-4. `make validate` → `make dev PLUGIN=<name>` で動作確認
+4. `make validate` → `make install-link PLUGIN=<name>` で動作確認
 
 `plugin.json` の `version` を上げたときだけ利用者に更新が届く。リリースのたびに bump する。
 
