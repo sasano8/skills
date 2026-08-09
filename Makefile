@@ -30,8 +30,8 @@ validate: ## marketplace と全プラグインのマニフェストを検証
 	@claude plugin validate . --strict
 	@for p in $(PLUGINS); do claude plugin validate ./plugins/$$p --strict || exit 1; done
 
-.PHONY: install
-install: uninstall-dev ## このリポジトリをローカル marketplace として登録し PLUGIN をインストール
+.PHONY: install-plugin
+install-plugin: uninstall-dev ## このリポジトリをローカル marketplace として登録し PLUGIN をインストール（本番用）
 	claude plugin marketplace add $(CURDIR)
 	claude plugin install $(PLUGIN)@$(MARKETPLACE) --scope $(SCOPE)
 
@@ -40,7 +40,7 @@ update: ## marketplace のカタログを取り直す
 	claude plugin marketplace update $(MARKETPLACE)
 
 .PHONY: uninstall
-# REJECT: [distill:make-uninstall-drops-shared-marketplace]: install が marketplace 全体を登録する以上、uninstall が全体を外すのは対称で一貫している
+# REJECT: [distill:make-uninstall-drops-shared-marketplace]: install-plugin が marketplace 全体を登録する以上、uninstall が全体を外すのは対称で一貫している
 uninstall: uninstall-dev uninstall-copy ## PLUGIN の導入をすべて外す（コピー形式・symlink の両方）
 
 .PHONY: install-dev
