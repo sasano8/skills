@@ -43,6 +43,7 @@ update: ## marketplace のカタログを取り直す
 uninstall: uninstall-dev ## PLUGIN の導入をすべて外す（コピー / marketplace 登録 / Claude・Codex の symlink）
 	@claude plugin uninstall $(PLUGIN)@$(MARKETPLACE) 2>/dev/null || echo "skip  コピー版は未インストール"
 	@claude plugin marketplace remove $(MARKETPLACE) 2>/dev/null || echo "skip  marketplace は未登録"
+	@node scripts/forget-marketplace.mjs $(MARKETPLACE)
 
 .PHONY: install-dev
 install-dev: claude-link codex-link ## Claude と Codex の両方へ symlink する（コピーせず即反映＝開発用）

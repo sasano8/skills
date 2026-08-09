@@ -79,6 +79,14 @@ make uninstall
 ```
 
 削除されるプラグインはコピーされたもの、リンクされたもの両対応です。
+`settings.json` に書かれた `extraKnownMarketplaces` / `enabledPlugins` も併せて掃除します。
+
+> **なぜ掃除が要るか**: `claude plugin install` は `~/.claude/settings.json` にこの 2 つを書く。
+> 通常は `uninstall` / `marketplace remove` が消すが、`known_marketplaces.json` から先に消えていると
+> `marketplace remove` が `not found` で失敗し、settings.json の取り残しだけが残る。
+> その状態は CLI では回収できない（remove が常に not found になる）ので、
+> [`scripts/forget-marketplace.mjs`](scripts/forget-marketplace.mjs) が直接消している。
+> 触るのは当該 marketplace 由来のエントリだけで、空になった親キーを畳む以外は他の設定に触れない。
 
 ---
 
