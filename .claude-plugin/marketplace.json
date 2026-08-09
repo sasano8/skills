@@ -8,6 +8,20 @@
   },
   "plugins": [
     {
+      "name": "quality",
+      "source": "./plugins/quality",
+      "description": "プロジェクトの品質規約を正本として持ち、リポジトリを監査して是正をタスク化する。docs サイトと PyPI リリースの公開 CI も、CI を割らない安全な guard 付きで整える（Python + uv）。",
+      "category": "development",
+      "tags": ["quality", "audit", "conventions", "ci", "mkdocs", "pypi", "uv", "python"]
+    },
+    {
+      "name": "onboarding",
+      "source": "./plugins/onboarding",
+      "description": "開発マシン／新環境を冪等・非破壊にオンボーディングする。版管理された dotfiles の反映（配布方式の選び分け付き）と、シークレット混入を commit 前に止めるグローバルガードの 2 本立て。",
+      "category": "development",
+      "tags": ["onboarding", "dotfiles", "setup", "secrets", "gitleaks", "pre-commit"]
+    },
+    {
       "name": "distillation",
       "source": "./plugins/distillation",
       "description": "コードから規則・慣習を蒸留して再利用可能なスキル草稿を生成し、未起票の課題をソースの TODO/FIXME/REJECT タグへ還す（コードファースト）。",

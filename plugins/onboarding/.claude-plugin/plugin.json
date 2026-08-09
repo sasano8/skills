@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "onboarding",
+  "displayName": "Onboarding",
+  "version": "0.1.0",
+  "description": "開発マシン／新環境を冪等・非破壊にオンボーディングする。版管理された dotfiles の反映（配布方式の選び分け付き）と、シークレット混入を commit 前に止めるグローバルガードの 2 本立て。",
+  "author": {
+    "name": "sasano8",
+    "url": "https://github.com/sasano8"
+  },
+  "homepage": "https://github.com/sasano8/skills",
+  "repository": "https://github.com/sasano8/skills",
+  "license": "MIT",
+  "keywords": ["onboarding", "dotfiles", "setup", "secrets", "gitleaks", "pre-commit", "symlink"]
+}
