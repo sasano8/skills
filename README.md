@@ -86,7 +86,8 @@ make uninstall
 > `marketplace remove` が `not found` で失敗し、settings.json の取り残しだけが残る。
 > その状態は CLI では回収できない（remove が常に not found になる）ので、
 > [`scripts/forget-marketplace.mjs`](scripts/forget-marketplace.mjs) が直接消している。
-> 触るのは当該 marketplace 由来のエントリだけで、空になった親キーを畳む以外は他の設定に触れない。
+> 触るのは当該 marketplace 由来のエントリだけ。消すものが無ければ書き込まないので、
+> 他人の `settings.json` を無用に書き換えない（空の `{}` が残るのは無害なので放置する）。
 
 ---
 

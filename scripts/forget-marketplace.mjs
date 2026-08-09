@@ -7,7 +7,7 @@
 // （remove が常に not found になる）、ここで直接消す。
 //
 // 触るのは extraKnownMarketplaces[<marketplace>] と enabledPlugins["*@<marketplace>"] だけ。
-// 空になった親キーは削除する。他の設定には触れない。
+// 消すものが無ければファイルを開くだけで書き込まない。
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
@@ -54,18 +54,9 @@ for (const file of files) {
     }
   }
 
-  // 空になった親キーは畳む。CLI 自身が中身を消したあとに {} だけ残ることがあるので、
-  // ここに来た時点で空なら（自分が消したかに関わらず）落とす。
-  const emptied = [];
-  for (const key of ["extraKnownMarketplaces", "enabledPlugins"]) {
-    if (data[key] && Object.keys(data[key]).length === 0) {
-      delete data[key];
-      emptied.push(key);
-    }
-  }
-
-  if (removed.length === 0 && emptied.length === 0) continue;
+  // 空になった親キー（extraKnownMarketplaces: {} 等）は畳まない。無害なうえ、
+  // 畳むと「このリポジトリのエントリが元々無い settings.json」まで書き換えることになる。
+  if (removed.length === 0) continue;
   writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
-  const what = [...removed, ...emptied.map((k) => `${k}（空なので削除）`)];
-  console.log(`clean ${file}  (${what.join(", ")})`);
+  console.log(`clean ${file}  (${removed.join(", ")})`);
 }
