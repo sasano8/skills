@@ -16,7 +16,7 @@ make uninstall     # 導入をすべて外す（settings.json の取り残しも
 `make` でコマンド一覧を表示する。`install-plugin` / `tag` / `tag-dryrun` は
 `PLUGIN=<name>` で対象を必ず指定する（例: `make install-plugin PLUGIN=advisor`）。
 `install-dev`・同期・検証は全プラグインが対象で、`PLUGIN` では絞り込まない。
-開発の参照順と変更から検証までの流れは [開発ガイド](DEVELOPMENT.md) を参照する。
+詳細ガイドは `docs/` に置く。開発の参照順と変更から検証までの流れは [開発ガイド](docs/DEVELOPMENT.md) を参照する。
 
 ## エージェント間の共通化
 
@@ -31,7 +31,7 @@ make uninstall     # 導入をすべて外す（settings.json の取り残しも
 - **スキルの共通定義は `plugins/<plugin>/reference.md` が正本。** 各 `SKILL.md` は自分の手順だけを
   持ち、共通部分を再記載しない。値（既定値・書式）を SKILL.md 側へ写さないこと。
 - **`skills/*/reference.md` は生成物。直接編集しない。** 編集はプラグイン直下の正本へ行い、
-  コミット前にトップレベルの `sync-references.mjs`（`make sync-references`）で全スキルへ一括反映する。
+  コミット前に `scripts/sync_references.py`（`make sync-references`）で全スキルへ一括反映する。
   生成物もコミットする。`make validate` と CI は未同期を失敗にする。
 - 共有定義が不要なスキルは `SKILL.md` にまとめてよい。共通文書がないプラグインは同期対象外。
 - **`SKILL.md` の `description` は起動判定にそのまま使われる。** パスや責務を変えたら description も

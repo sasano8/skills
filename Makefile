@@ -39,13 +39,13 @@ help: ## このヘルプを表示
 
 .PHONY: sync-references check-references test-sync-references
 sync-references: ## 全スキルへ共有 reference.md をコピー（コミット前に実行）
-	@node sync-references.mjs
+	@python3 scripts/sync_references.py
 
 check-references: ## 共有 reference.md のコピーが最新か検証（書き換えなし）
-	@node sync-references.mjs --check
+	@python3 scripts/sync_references.py --check
 
 test-sync-references: ## 共有文書の同期処理をテスト
-	@node --test scripts/sync-references.test.mjs
+	@python3 scripts/test_sync_references.py
 
 .PHONY: validate
 # TODO: [distill:validate-misses-unregistered-plugin]: plugins/ の実体と marketplace.json の source 集合を突き合わせる

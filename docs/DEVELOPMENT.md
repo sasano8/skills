@@ -1,24 +1,25 @@
 # 開発ガイド
 
-[README](README.md) · [導入・配布ガイド](INSTALLATION.md)
+[README](../README.md) · [導入・配布ガイド](INSTALLATION.md)
 
 ### 最初に読むもの
 
 | 知りたいこと | 参照先 |
 | --- | --- |
-| 編集時に守る規約・正本と生成物の扱い | [AGENTS.md](AGENTS.md) |
+| 編集時に守る規約・正本と生成物の扱い | [AGENTS.md](../AGENTS.md) |
 | 収録スキルと対象プラグインの入口 | [PLUGINS.md](PLUGINS.md) → 各プラグインの README |
 | 対象プラグインの共通定義 | `plugins/<plugin>/reference.md`（存在する場合） |
-| 実行するコマンドと依存関係 | [Makefile](Makefile) |
-| CI の実行条件・ツール設定 | [validate.yml](.github/workflows/validate.yml) |
+| 実行するコマンドと依存関係 | [Makefile](../Makefile) |
+| CI の実行条件・ツール設定 | [validate.yml](../.github/workflows/validate.yml) |
 
 この節は作業の進め方、`AGENTS.md` は編集規約、各プラグインの文書は固有の仕様を扱う。
 規則の詳細はそれぞれの正本で確認する。
 
 ### 開発環境と普段の流れ
 
-Git、make、Node.js、Claude Code CLI を使う。Node.js の版と CLI の導入方法は
-[CI の設定](.github/workflows/validate.yml) に合わせる。現行 CI は Node.js 22 と CLI の `@latest` を使う。
+共有文書の同期とテストは Python 3.10 以降の標準ライブラリだけで動く。追加パッケージは不要。
+プラグインの検証・導入には Git、make、Node.js、Claude Code CLI も使う。Node.js の版と CLI の導入方法は
+[CI の設定](../.github/workflows/validate.yml) に合わせる。現行 CI は Python 3.12、Node.js 22 と CLI の `@latest` を使う。
 ローカルの構成検証には API キーは不要。モデルを呼び出す動作確認には別途認証が必要。
 
 1. 作業ツリーの差分と対象プラグインの文書を確認する。
@@ -61,6 +62,10 @@ claude --plugin-dir ./plugins/<name>
 
 ```
 AGENTS.md                            # エージェント向けの規約（実体）
+docs/
+  DEVELOPMENT.md                    # 開発手順・構成・検証
+  INSTALLATION.md                   # 導入・更新・配布の詳細
+  PLUGINS.md                        # 収録プラグインとスキルの一覧
 .claude-plugin/marketplace.json      # marketplace カタログ（このリポジトリのルートに 1 つ）
 plugins/
   distillation/
@@ -110,8 +115,8 @@ Bedrock / Vertex AI / Foundry / ゲートウェイ等への対応は
 
 ### スキル間で定義を共有する（生成コピー方式）
 
-共通定義の正本は `plugins/<plugin>/reference.md` に置く。トップレベルの
-[`sync-references.mjs`](sync-references.mjs) が、`plugins/*/skills/*/SKILL.md` のある
+共通定義の正本は `plugins/<plugin>/reference.md` に置く。
+[`scripts/sync_references.py`](../scripts/sync_references.py) が、`plugins/*/skills/*/SKILL.md` のある
 各スキルへ `reference.md` をコピーする。共通文書がないプラグインは対象外。
 スキルが 1 つだけなら、必要に応じて `SKILL.md` にまとめてもよい。
 
@@ -138,7 +143,7 @@ marketplace カタログ・各 `plugin.json`・各 `SKILL.md` の frontmatter �
 API キーは要らない（ローカルのファイルを読むだけ）。
 
 同じものを PR と main への push で回す:
-[`.github/workflows/validate.yml`](.github/workflows/validate.yml) — Node を入れて
+[`.github/workflows/validate.yml`](../.github/workflows/validate.yml) — Python と Node を用意して
 `@anthropic-ai/claude-code` を `npm install -g` し、`make validate` を実行するだけ。
 
 > CLI は `@latest` で入れている。新しい版で検査項目が増えると、コードを触っていなくても CI が落ちることがある。

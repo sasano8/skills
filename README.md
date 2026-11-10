@@ -5,7 +5,7 @@ Claude Code / Codex で共用する Agent Skills。
 
 ## 収録プラグイン
 
-[プラグイン一覧](PLUGINS.md)
+[プラグイン一覧](docs/PLUGINS.md)
 
 ## インストール
 
@@ -23,12 +23,12 @@ $skill-installer https://github.com/sasano8/skills/tree/main/plugins/auto-skill/
 ```
 
 導入後の呼び出しは Claude Code なら `/auto-skill:auto-skill`、Codex なら `$auto-skill`。
-他のスキルは [一覧](PLUGINS.md) から選ぶ。
-更新・開発用リンク・アンインストールは [導入・配布ガイド](INSTALLATION.md) を参照。
+他のスキルは [一覧](docs/PLUGINS.md) から選ぶ。
+更新・開発用リンク・アンインストールは [導入・配布ガイド](docs/INSTALLATION.md) を参照。
 
 ## 開発
 
-編集規約は [AGENTS.md](AGENTS.md)、構成と作業手順は [開発ガイド](DEVELOPMENT.md) を参照。
+編集規約は [AGENTS.md](AGENTS.md)、構成と作業手順は [開発ガイド](docs/DEVELOPMENT.md) を参照。
 基本の確認はリポジトリルートで行う:
 
 ```sh

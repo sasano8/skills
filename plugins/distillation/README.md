@@ -75,7 +75,7 @@ flowchart TD
 [`reference.md`](reference.md) が正本で、各 SKILL.md は自分の手順だけを持つ。
 5 スキルの `skills/<name>/reference.md` は正本から生成した配布用コピー。変更後は `make sync-references` で同期する
 （同期と検証の手順は
-[開発ガイド](../../DEVELOPMENT.md#スキル間で定義を共有する生成コピー方式)）。
+[開発ガイド](../../docs/DEVELOPMENT.md#スキル間で定義を共有する生成コピー方式)）。
 
 成果物・課題・scope は対象プロジェクトの `workspaces/distillation/<target>/` に target 単位で
 永続管理する（`workspaces/<skill>/` はスキル共通の作業場置き場）。git 非追跡にしたいなら
