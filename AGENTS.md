@@ -7,7 +7,8 @@ Claude Code / Codex で共用する Agent Skills。Claude Code 向けにはプ�
 ## 定形コマンド
 
 ```sh
-make validate      # marketplace と全プラグインのマニフェスト・SKILL.md を検証（--strict）
+make sync-references # 共有文書を各スキルへ一括コピー（コミット前に実行）
+make validate      # コピーの同期・同期処理・marketplace・全プラグインを検証
 make install-dev   # Claude と Codex の両方へ symlink（開発用）
 make uninstall     # 導入をすべて外す（settings.json の取り残しも掃除する）
 ```
@@ -27,8 +28,10 @@ make uninstall     # 導入をすべて外す（settings.json の取り残しも
 
 - **スキルの共通定義は `plugins/<plugin>/reference.md` が正本。** 各 `SKILL.md` は自分の手順だけを
   持ち、共通部分を再記載しない。値（既定値・書式）を SKILL.md 側へ写さないこと。
-- **`skills/*/reference.md` は symlink**（`../../reference.md`）。実体は 1 つ。編集は実体側へ。
-  複製に置き換えないこと（理由は README の「スキル間で定義を共有する（symlink 方式）」）。
+- **`skills/*/reference.md` は生成物。直接編集しない。** 編集はプラグイン直下の正本へ行い、
+  コミット前にトップレベルの `sync-references.mjs`（`make sync-references`）で全スキルへ一括反映する。
+  生成物もコミットする。`make validate` と CI は未同期を失敗にする。
+- 共有定義が不要なスキルは `SKILL.md` にまとめてよい。共通文書がないプラグインは同期対象外。
 - **`SKILL.md` の `description` は起動判定にそのまま使われる。** パスや責務を変えたら description も
   合わせる。ここだけが常時コンテキストに載る。
 - **SKILL.md に特定エージェント固有の変数を書かない**（`${CLAUDE_PLUGIN_ROOT}` 等）。

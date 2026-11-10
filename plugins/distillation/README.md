@@ -73,9 +73,9 @@ flowchart TD
 
 共通定義（原則・ディレクトリ体系・config と scope・課題票の書式・タグ文法・モード・設計の根拠）は
 [`reference.md`](reference.md) が正本で、各 SKILL.md は自分の手順だけを持つ。
-5 スキルはプラグインルートの実体を `skills/<name>/reference.md` の symlink で共有している
-（この方式を選んだ理由と Windows 非対象の注記は
-[リポジトリ README](../../README.md#スキル間で定義を共有するsymlink-方式)）。
+5 スキルの `skills/<name>/reference.md` は正本から生成した配布用コピー。変更後は `make sync-references` で同期する
+（同期と検証の手順は
+[リポジトリ README](../../README.md#スキル間で定義を共有する生成コピー方式)）。
 
 成果物・課題・scope は対象プロジェクトの `workspaces/distillation/<target>/` に target 単位で
 永続管理する（`workspaces/<skill>/` はスキル共通の作業場置き場）。git 非追跡にしたいなら

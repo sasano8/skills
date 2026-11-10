@@ -1,7 +1,7 @@
 # auto-skill — 共通定義
 
 このファイルが出力構成・文書の扱い・更新・検証の正本。各スキルから隣接する
-`reference.md` の symlink を通じて読む。
+`reference.md` の生成コピーを通じて読む。コピーはトップレベルの `make sync-references` で更新する。
 
 ## 目的と正本との分担
 

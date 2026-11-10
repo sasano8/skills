@@ -143,7 +143,7 @@ plugins/
     reference.md                     # スキル間で共有する定義（正本）
     skills/
       extract-rules/SKILL.md         # = /distillation:extract-rules
-      extract-rules/reference.md     # → ../../reference.md（symlink）
+      extract-rules/reference.md     # 正本から生成した配布用コピー
       extract-rules/agents/openai.yaml  # Codex 用のメタデータ（Claude は読まない）
       extract-issues/SKILL.md
       merge-issues/SKILL.md
@@ -177,36 +177,35 @@ Bedrock / Vertex AI / Foundry / ゲートウェイ等への対応は
    「いつ使うか」を具体的に書く — Claude はここだけを見て起動を判断する）
 3. 各スキルに `agents/openai.yaml` を置く（Codex 用のベンダーメタデータ。下記「ベンダー固有ファイル」）
 4. ルートの `.claude-plugin/marketplace.json` の `plugins` に `{"name": ..., "source": "./plugins/<name>", ...}` を足す
-5. `make validate` → `make install-dev` で動作確認
+5. `make sync-references` → `make validate` → `make install-dev` で動作確認
 
 `plugin.json` の `version` を上げたときだけ利用者に更新が届く。リリースのたびに bump する。
 
-### スキル間で定義を共有する（symlink 方式）
+### スキル間で定義を共有する（生成コピー方式）
 
-共通の定義は**プラグインのルートに 1 ファイル置いて、各スキルディレクトリから symlink する**。
-SKILL.md 側は `[reference.md](reference.md)` と隣接ファイルとして参照する。
+共通定義の正本は `plugins/<plugin>/reference.md` に置く。トップレベルの
+[`sync-references.mjs`](sync-references.mjs) が、`plugins/*/skills/*/SKILL.md` のある
+各スキルへ `reference.md` をコピーする。共通文書がないプラグインは対象外。
+スキルが 1 つだけなら、必要に応じて `SKILL.md` にまとめてもよい。
 
-**なぜ symlink なのか**（他の手段を採らなかった理由。変えるときはここを読む）:
+```sh
+make sync-references   # 正本から全スキルへ一括コピー
+make check-references  # コピーが最新か検証（書き換えなし）
+make validate          # 同期チェック・同期処理のテスト・プラグイン検証
+```
 
-| 手段 | 却下の理由 |
-| --- | --- |
-| `${CLAUDE_SKILL_DIR}/../../reference.md` | この変数を展開するのは Claude Code だけ。Codex 等へ持ち出すと壊れる（下記「Claude Code / Codex の共通仕様」の方針と衝突） |
-| 各スキルに複製 | 4 ファイルを同期し続けることになり、共通化した意味が消える |
-| SKILL.md から `../../reference.md` を直接参照 | スキルディレクトリ外の相対参照は公式に定義されていない。隣接ファイルの参照だけが文書化された挙動 |
+**編集するのは正本だけ。コミット前に同期し、生成物も一緒にコミットする。**
+コピーの冒頭に生成元と直接編集禁止の案内を付ける。CI では差異・欠落・symlink を検出して失敗にし、
+自動修正は行わない。コミットフックの導入は不要で、実行漏れも CI で検出できる。
 
-symlink が成り立つ根拠:
-
-- プラグイン自身のディレクトリ内で解決される symlink は、インストール時のキャッシュコピーでも
-  **相対 symlink のまま保たれる**（プラグインの外を指す symlink は安全のためスキップされる）
-- スキルディレクトリが自己完結するので、`make codex-link` で Codex 側へ symlink しても解決する
-
-> **Windows は対象外**。`core.symlinks` が無効な環境で clone すると `skills/*/reference.md` が
-> パス文字列を含むテキストファイルになり、参照が壊れる。Windows を対象に入れるなら複製方式へ
-> 切り替え、同期チェックを `make validate` に足すこと。
+各 `SKILL.md` は `[reference.md](reference.md)` と隣接ファイルとして参照する。
+配布用の共有文書は通常ファイルなので、スキル単体を取得してもプラグイン直下への参照が切れない。
+開発用の `make codex-link` / `make install-dev` は引き続き導入先への symlink を使う。
 
 ### 検証の中身と CI
 
-`make validate` は marketplace カタログ・各 `plugin.json`・各 `SKILL.md` の frontmatter を検査し、
+`make validate` は共有文書の同期チェックと同期処理のテストに続き、
+marketplace カタログ・各 `plugin.json`・各 `SKILL.md` の frontmatter を検査し、
 `--strict` なので警告（`description` 欠落、`author` 欠落など）も失敗にする。
 API キーは要らない（ローカルのファイルを読むだけ）。
 
@@ -254,8 +253,8 @@ make codex-unlink
 
 Codex CLI では `$extract-rules` のように明示起動、`/skills` で一覧。`description` にマッチすれば
 暗黙起動もする（Claude と同じ挙動）。呼び出し名が `/distillation:extract-rules` ではなく
-`extract-rules` になる点だけ違う。共有 `reference.md` は symlink がスキルディレクトリ内に
-入っているので、そのまま解決される。
+`extract-rules` になる点だけ違う。共有 `reference.md` は通常ファイルとしてスキルディレクトリ内に
+含まれるので、スキル単体の配布でも参照できる。
 
 ### ベンダー固有ファイル
 

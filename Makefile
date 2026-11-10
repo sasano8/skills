@@ -23,10 +23,20 @@ help: ## このヘルプを表示
 	@echo "        SKILLS_DIR=$(SKILLS_DIR)"
 	@echo "        CLAUDE_SKILLS_DIR=$(CLAUDE_SKILLS_DIR)"
 
+.PHONY: sync-references check-references test-sync-references
+sync-references: ## 全スキルへ共有 reference.md をコピー（コミット前に実行）
+	@node sync-references.mjs
+
+check-references: ## 共有 reference.md のコピーが最新か検証（書き換えなし）
+	@node sync-references.mjs --check
+
+test-sync-references: ## 共有文書の同期処理をテスト
+	@node --test scripts/sync-references.test.mjs
+
 .PHONY: validate
 # TODO: [distill:validate-misses-unregistered-plugin]: plugins/ の実体と marketplace.json の source 集合を突き合わせる
 #   詳細: 登録し忘れ / 実体の欠落のどちらも現状は検出できず、CI が緑のまま利用者に届かない。
-validate: ## marketplace と全プラグインのマニフェストを検証
+validate: check-references test-sync-references ## 共有文書と marketplace・全プラグインを検証
 	@claude plugin validate . --strict
 	@for p in $(PLUGINS); do claude plugin validate ./plugins/$$p --strict || exit 1; done
 
