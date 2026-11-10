@@ -1,17 +1,11 @@
 # sasano8-skills
 
-**Claude Code のプラグイン marketplace**。ここに複数のプラグイン（＝スキル群）を並べて、
-1 つのリポジトリからまとめて配布・更新する。
+**Claude Code / Codex で共用する Agent Skills**。スキル本体を 1 つのリポジトリで管理し、
+Claude Code にはプラグイン marketplace、Codex にはスキルディレクトリとして配布する。
 
 ## 収録プラグイン
 
-| プラグイン | 内容 | スキル |
-| --- | --- | --- |
-| [advisor](plugins/advisor/) | 変化する製品情報を検索し、用途と優先順位に合う選択肢を助言する | `ai-model` |
-| [distillation](plugins/distillation/) | コードから規則・慣習を蒸留してスキル草稿を生成し、未起票の課題をソースの `TODO:` / `FIXME:` / `REJECT:` タグへ還す | `extract-rules` `extract-issues` `merge-issues` `grep-issues` |
-
-プラグインのスキルは常に**プラグイン名で名前空間される**（`/<plugin>:<skill>`）ので、
-別の marketplace と名前が衝突しない。自然文でも起動する（例: 「蒸留して」）。
+[プラグイン一覧](PLUGINS.md)
 
 ---
 
@@ -142,7 +136,6 @@ claude --plugin-dir ./plugins/<name>
 
 ```
 AGENTS.md                            # エージェント向けの規約（実体）
-CLAUDE.md                            # @AGENTS.md を import するだけ（Claude Code は AGENTS.md を読まない）
 .claude-plugin/marketplace.json      # marketplace カタログ（このリポジトリのルートに 1 つ）
 plugins/
   distillation/
@@ -167,9 +160,15 @@ workspaces/                          # プラグインの作業場置き場（wo
 `.claude-plugin/` の中に置くのは `plugin.json` / `marketplace.json` **だけ**で、`skills/` や `agents/`、
 `hooks/` はプラグインのルート直下に置く（よくある間違い）。
 
-規約は `AGENTS.md` を実体とし、`CLAUDE.md` は `@AGENTS.md` の 1 行だけを持つ
-（**Claude Code は `AGENTS.md` を読まない**ため。Codex は `AGENTS.md` を読む）。
-編集は `AGENTS.md` 側へ。
+規約は `AGENTS.md` に一本化する。Claude Code は **2.1.277 以降、`CLAUDE.md` がない場合に
+`AGENTS.md` を読む**（[公式 changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md#21277)）。
+Bedrock / Vertex AI / Foundry / ゲートウェイ等への対応は
+[2.1.281 で拡張](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md#21281)された。利用環境では最新版を使い、
+`/config` の「Project instructions」で読み込み設定を確認する。
+
+旧版を使う利用先では `CLAUDE.md` に `@AGENTS.md` を書く橋渡しが可能だが、このリポジトリには置かない。
+独立した `CLAUDE.md` が残るプロジェクトでは `AGENTS.md` が代わりに読まれるとは限らないので、
+既存の指示を確認してから統合する。
 
 ### プラグインを 1 つ追加する
 
@@ -191,7 +190,7 @@ SKILL.md 側は `[reference.md](reference.md)` と隣接ファイルとして参
 
 | 手段 | 却下の理由 |
 | --- | --- |
-| `${CLAUDE_SKILL_DIR}/../../reference.md` | この変数を展開するのは Claude Code だけ。Codex 等へ持ち出すと壊れる（下記「Claude 以外のエージェントで使う」の方針と衝突） |
+| `${CLAUDE_SKILL_DIR}/../../reference.md` | この変数を展開するのは Claude Code だけ。Codex 等へ持ち出すと壊れる（下記「Claude Code / Codex の共通仕様」の方針と衝突） |
 | 各スキルに複製 | 4 ファイルを同期し続けることになり、共通化した意味が消える |
 | SKILL.md から `../../reference.md` を直接参照 | スキルディレクトリ外の相対参照は公式に定義されていない。隣接ファイルの参照だけが文書化された挙動 |
 
@@ -220,10 +219,18 @@ API キーは要らない（ローカルのファイルを読むだけ）。
 
 ---
 
-## Claude 以外のエージェントで使う
+## Claude Code / Codex の共通仕様
 
-**marketplace / プラグインの仕組みは Claude Code 固有**だが、中身の `SKILL.md` は
-frontmatter（`name` / `description`）＋ Markdown 本文という素の形式で、特定エージェントの API に依存していない。
+スキル本体は [Agent Skills](https://agentskills.io/specification) の
+frontmatter（`name` / `description`）＋ Markdown 本文を共用し、配布や表示の設定を外側へ分ける。
+
+| 対象 | 共通化するもの | エージェント別に持つもの |
+| --- | --- | --- |
+| プロジェクト規約 | `AGENTS.md` | 旧 Claude Code 向けの `CLAUDE.md` import（必要な利用先のみ） |
+| スキル本体 | `SKILL.md`、共有 `reference.md` | Claude の marketplace / plugin manifest、Codex の `agents/openai.yaml` |
+| 呼び出し | 名前・description・手順 | Claude の `/plugin:skill`、Codex の `$skill` |
+
+frontmatter に独自の `type: func` は置かない。ベンダー固有の起動設定も、共通本文へ埋め込まない。
 このリポジトリの SKILL.md も Claude 固有の変数やツール名を参照していないので、そのまま流用できる。
 
 ### OpenAI Codex

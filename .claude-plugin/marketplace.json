@@ -34,6 +34,13 @@
       "description": "コードから規則・慣習を蒸留して再利用可能なスキル草稿を生成し、未起票の課題をソースの TODO/FIXME/REJECT タグへ還す（コードファースト）。",
       "category": "development",
       "tags": ["conventions", "code-review", "documentation", "todo", "refactoring"]
+    },
+    {
+      "name": "auto-skill",
+      "source": "./plugins/auto-skill",
+      "description": "ガイドライン等の文書と関連文書の関係を読み取り、正本への参照を中心に対象リポジトリの作業用スキルを生成・更新する。",
+      "category": "development",
+      "tags": ["agent-skills", "guidelines", "documentation", "claude-code", "codex"]
     }
   ]
 }

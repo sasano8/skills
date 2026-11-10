@@ -1,0 +1,4 @@
+interface:
+  display_name: "Auto Skill"
+  short_description: "ガイドラインの関係を整理し、正本を参照するスキルを生成"
+  default_prompt: "Use $auto-skill to turn the supplied guidelines and related documents into repository-local skills that consult the authoritative sources during execution."

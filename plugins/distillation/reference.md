@@ -84,8 +84,10 @@ distillation-workspace: docs/distillation/
 
 既定の 2 択から外れた任意のパスに置きたいときだけ書く。既定でよいなら書かない。
 
-> Claude Code が読むのは `CLAUDE.md` で、`AGENTS.md` は読まない。両方のエージェントに効かせるなら
-> `CLAUDE.md` に `@AGENTS.md` と書いて import するか、`ln -s AGENTS.md CLAUDE.md` で橋渡しする。
+> 共通の規約は `AGENTS.md` を正本にする。Claude Code 2.1.277 以降は `CLAUDE.md` がない場合に
+> `AGENTS.md` を読む（[公式 changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md#21277)）。
+> 旧版への対応が必要な利用先では、`CLAUDE.md` に `@AGENTS.md` を書いて橋渡しする。
+> 独立した `CLAUDE.md` が既にある場合は、指示の競合を確認してから統合する。
 
 **宣言されたパスが存在しなければ、勝手に新設せずユーザーに確認する。** 宣言は実体とずれうる
 （移動して直し忘れる）ので、黙って別の作業場を作ると既存の課題票が取り残される。
@@ -122,9 +124,9 @@ distillation-workspace: docs/distillation/
 | `CLAUDE.md` が `AGENTS.md` への symlink | `AGENTS.md` だけ（実体は 1 つ） |
 | `CLAUDE.md` に `@AGENTS.md` の import 行がある | `AGENTS.md` だけ（import 経由で Claude にも届く） |
 | 2 つが独立している（import も symlink も無い） | **両方に書く** |
-| `AGENTS.md` しか無い | `AGENTS.md` に書き、`@AGENTS.md` を 1 行持つ `CLAUDE.md` の新設を提案する |
+| `AGENTS.md` しか無い | `AGENTS.md` に書く。旧 Claude Code への対応が必要な場合だけ import 用 `CLAUDE.md` を提案する |
 | `CLAUDE.md` しか無い | `CLAUDE.md` に書く。Codex 等も使うなら `AGENTS.md` への切り出しを提案する |
-| どちらも無い | 使っているエージェントに合わせて作成を提案する（勝手に作らない） |
+| どちらも無い | 共通の `AGENTS.md` の作成を提案する（勝手に作らない）。旧版向けの橋渡しは必要な場合だけ追加する |
 
 調べ方: `test -L CLAUDE.md` で symlink を判定し、`grep -n '@AGENTS\.md' CLAUDE.md` で import 行を探す
 （import はコードブロック内だと無効なので、バッククォートに囲まれていないことも確認する）。

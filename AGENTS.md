@@ -1,6 +1,7 @@
 # sasano8-skills
 
-Claude Code のプラグイン marketplace。`plugins/<name>/` が各プラグインの実体で、
+Claude Code / Codex で共用する Agent Skills。Claude Code 向けにはプラグイン marketplace として配布する。
+`plugins/<name>/` が各プラグインの実体で、
 `.claude-plugin/marketplace.json` がカタログ。全体像は [README.md](README.md) を参照。
 
 ## 定形コマンド
@@ -13,6 +14,14 @@ make uninstall     # 導入をすべて外す（settings.json の取り残しも
 
 `make` で一覧。対象プラグインは `PLUGIN=<name>`（既定 `distillation`）。効くのは 1 プラグインを名指しする
 ターゲット（`install-plugin` / `tag`）だけで、`install-dev` 系は Claude・Codex とも常に全プラグインを張る。
+
+## エージェント間の共通化
+
+- プロジェクト規約は `AGENTS.md` を正本とする。Claude Code 2.1.277 以降は、`CLAUDE.md` が
+  無いプロジェクトで `AGENTS.md` を読む。旧版向けの橋渡しファイルは必要な利用先だけに置く。
+- スキル本体は Agent Skills 形式の `SKILL.md` と共有 `reference.md` にまとめる。
+  frontmatter は標準フィールドを使い、独自の `type: func` 等は追加しない。
+- 配布・起動方法とベンダー固有メタデータは README・manifest・`agents/openai.yaml` に分ける。
 
 ## 編集するときの注意
 

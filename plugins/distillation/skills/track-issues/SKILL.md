@@ -1,10 +1,7 @@
 ---
 name: track-issues
-type: func
 description: 課題の管理場所（作業場の issue/）・課題票の書式・タグ文法を規定する正本であり、持ち込まれた課題を課題票へ起票する入口。規約ファイルの issue-tracking 宣言はこのスキルを指し、品質監査など外部の仕組みが先送りする課題もここ経由で起票する。ユーザーが「この課題を記録して」「課題票へ起票して」「課題管理の場所・書式を教えて」等を求めたとき、他の仕組みが宣言経由で課題を持ち込んだときに使う。コード読解による課題の発見は extract-issues を使う。プロジェクト非依存。
 ---
-
-<!-- TODO: [distill:skill-frontmatter-type-undocumented]: frontmatter の `type: func` を削る（5 スキル共通） -->
 
 # track-issues — 課題管理の規定と起票の入口
 
