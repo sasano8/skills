@@ -13,8 +13,10 @@ make install-dev   # Claude と Codex の両方へ symlink（開発用）
 make uninstall     # 導入をすべて外す（settings.json の取り残しも掃除する）
 ```
 
-`make` で一覧。対象プラグインは `PLUGIN=<name>`（既定 `distillation`）。効くのは 1 プラグインを名指しする
-ターゲット（`install-plugin` / `tag`）だけで、`install-dev` 系は Claude・Codex とも常に全プラグインを張る。
+`make` でコマンド一覧を表示する。`install-plugin` / `tag` / `tag-dryrun` は
+`PLUGIN=<name>` で対象を必ず指定する（例: `make install-plugin PLUGIN=advisor`）。
+`install-dev`・同期・検証は全プラグインが対象で、`PLUGIN` では絞り込まない。
+開発の参照順と変更から検証までの流れは [開発ガイド](DEVELOPMENT.md) を参照する。
 
 ## エージェント間の共通化
 
@@ -51,6 +53,7 @@ issue-tracking: distillation/track-issues
 ## 作業領域
 
 プラグインごとの作業領域は `workspaces/<plugin>/<target>/` で管理する。
+このリポジトリ自身の開発用スキルは `.agents/skills/` に置き、配布用の `plugins/*/skills/` と区別する。
 
 | プラグイン | 置き場所 | 中身 |
 | --- | --- | --- |

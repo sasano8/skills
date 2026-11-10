@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skills Repository Maintenance"
+  short_description: "規約を参照してプラグイン・スキル・開発ガイドを保守する"
+  default_prompt: "Use $maintain-skills-repo to update plugins, skills, or development guides in this repository, consulting current source documents and checking references and validation results."

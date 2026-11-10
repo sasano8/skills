@@ -3,7 +3,6 @@ MARKETPLACE := sasano8-skills
 #   詳細: 現状は plugins/ 直下のファイルも拾うため、README 等を 1 つ置くと validate が壊れる。
 #   codex-link の plugins/*/skills/* も同様。
 PLUGINS     := $(notdir $(wildcard plugins/*))
-PLUGIN      ?= distillation
 SCOPE       ?= user
 REMOTE      ?= origin
 # Codex のスキルディレクトリ
@@ -14,12 +13,27 @@ CLAUDE_SKILLS_DIR ?= $(HOME)/.claude/skills
 .DEFAULT_GOAL := help
 .NOTPARALLEL:
 
+# Stop before prerequisites (including uninstall-dev) when no valid target was selected.
+ifneq ($(filter install-plugin tag tag-dryrun,$(MAKECMDGOALS)),)
+ifeq ($(strip $(PLUGIN)),)
+$(error PLUGIN is required. Example: make $(firstword $(filter install-plugin tag tag-dryrun,$(MAKECMDGOALS))) PLUGIN=advisor)
+endif
+ifneq ($(filter $(PLUGIN),$(PLUGINS)),$(PLUGIN))
+$(error Unknown PLUGIN '$(PLUGIN)'. Choose one of: $(PLUGINS))
+endif
+ifneq ($(words $(PLUGIN)),1)
+$(error Specify exactly one PLUGIN)
+endif
+endif
+
 .PHONY: help
 help: ## このヘルプを表示
 	@grep -hE '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) \
 		| awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
 	@echo ""
-	@echo "  変数: PLUGIN=$(PLUGIN)  SCOPE=$(SCOPE)  REMOTE=$(REMOTE)"
+	@echo "  対象指定: install-plugin / tag / tag-dryrun は PLUGIN=<name> が必須"
+	@echo "  プラグイン: $(PLUGINS)"
+	@echo "  変数: SCOPE=$(SCOPE)  REMOTE=$(REMOTE)"
 	@echo "        SKILLS_DIR=$(SKILLS_DIR)"
 	@echo "        CLAUDE_SKILLS_DIR=$(CLAUDE_SKILLS_DIR)"
 
